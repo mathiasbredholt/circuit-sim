@@ -1,1 +1,2 @@
-resistor.js
+define(function() {
+});
