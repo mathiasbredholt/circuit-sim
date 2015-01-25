@@ -1,5 +1,7 @@
 body {
   margin: 0;
+  font-family: "Arial";
+  height: 100%;
 }
 
 #container {
@@ -7,10 +9,11 @@ body {
 }
 
 #content {
-  width: 100%;
+  width: 80%;
 }
 
 #rightmenu {
+  width: 256px;
   background: #DDD;
 }
 
@@ -23,4 +26,16 @@ body {
 
 #commandInput {
   margin: 8px;
+  font-size: 16px;
+  font-family: "Arial";
+  background: #EEE;
+  outline: none;
+  border: none;
+}
+
+p.commandItem {
+  padding: 2px;
+  margin: 8px;
+  background: #EEE;
+  font-size: 14px;
 }

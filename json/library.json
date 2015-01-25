@@ -1,0 +1,12 @@
+{
+  "components": [
+    { "name": "Resistor" },
+    { "name": "Capacitor" },
+    { "name": "Voltage Supply" },
+    { "name": "Transistor" },
+    { "name": "Inductor" },
+    { "name": "NAND Gate" },
+    { "name": "OR Gate" },
+    { "name": "Flip flop"}
+  ]
+}

@@ -1,13 +1,14 @@
-define(["jquery", "ui/commands"], function($, commands) {
+define(["jquery", "ui/commands", "socketio"], function($, commands, io) {
   return {
     init: function() {
       console.log("APPLICATION INIT");
 
-      $.get("json/library.json",
-        function(data) {
-          commands.load(data);
-        }
-      );
+      var socket = io();
+
+      socket.emit('load library');
+      socket.on('library', function(data) {
+        commands.load(data);
+      });
     }
   }
 });

@@ -1,9 +1,15 @@
 require.config({
+  shim: {
+    'socketio': {
+      exports: 'io'
+    },
+  },
 	baseUrl: 'js/lib',
 	paths: {
     app: '../app',
     ui: '../ui',
-		components: '../components'
+		components: '../components',
+    socketio: '/socket.io/socket.io'
 	}
 });
 
