@@ -1,0 +1,11 @@
+{
+  "resistor": {
+    name: "Resistor"
+  },
+  "capacitor": {
+    name: "Capacitor"
+  },
+  "voltagesupply": {
+    name: "Voltage Supply"
+  }
+}
