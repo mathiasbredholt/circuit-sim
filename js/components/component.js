@@ -1,7 +1,6 @@
 define(function() {
-  function Component(name) {
-    this.name = "";
+  return {
+    DrawComponent: function() {
+    }
   }
-
-  return Component;
 });

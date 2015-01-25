@@ -1,6 +1,7 @@
-define(["components/component", function(component) {
-  function Resistor() {
+define(["component", function(component) {
+  return {
+    create: function() {
+      component.DrawComponent();
+    }
   }
-
-  return Resistor;
 });
