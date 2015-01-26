@@ -3,22 +3,30 @@ body {
   font-family: "Arial";
   height: 100%;
   cursor: default;
+  overflow: hidden;
 }
 
 #container {
   display: flex;
-  overflow: hidden;
 }
 
 #content {
-  width: 80%;
+  width: 100%;
   cursor: crosshair;
 }
 
 #rightmenu {
-  -webkit-user-select: none;
+  position: absolute;
   width: 256px;
+  height: 100%;
   background: #DDD;
+  -webkit-user-select: none;
+  -webkit-transition: all 0.2s ease-in;
+}
+
+.slide {
+  -webkit-transform: translate3d(-256px, 0, 0);
+  -webkit-transition: all 0.2s ease-in;
 }
 
 #commands {

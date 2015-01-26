@@ -19,8 +19,8 @@ define(["jquery"], function ($) {
         elem.append(
           wireEnd = $("<div>")
           .addClass("wireEnd")
-          .css("left", beginX)
-          .css("top", beginY)
+          .css("left", beginX - 4)
+          .css("top", beginY - 4)
         );
 
         elem.append(
@@ -56,8 +56,6 @@ define(["jquery"], function ($) {
             .css("top", y - 1)
             .css("width", w)
             .css("height", h + 2);
-
-
           }
           else {
             w = 0;
