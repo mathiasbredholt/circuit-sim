@@ -1,4 +1,4 @@
-define(["jquery", "ui/commands", "socketio"], function($, commands, io) {
+define(["jquery", "ui/commands", "ui/wire", "socketio"], function($, commands, wire, io) {
   return {
     init: function() {
       console.log("APPLICATION INIT");
@@ -9,6 +9,9 @@ define(["jquery", "ui/commands", "socketio"], function($, commands, io) {
       socket.on('library', function(data) {
         commands.load(data);
       });
+
+      //WIRE DRAWING
+      wire.drawWire();
     }
   }
 });
