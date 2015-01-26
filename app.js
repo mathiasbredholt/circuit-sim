@@ -1,15 +1,33 @@
-var express = require('express')
-var app = express()
+var express = require('express');
+var app = express();
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
+var fs = require('fs');
 
-app.get('/', function (req, res) {
-  res.send('Hello World!')
-})
+app.get("/", function(req, res) {
+  res.sendFile(__dirname + "/www/index.html");
+});
 
-var server = app.listen(3000, function () {
+app.use("/js", express.static(__dirname + "/www/js"));
+app.use("/css", express.static(__dirname + "/www/css"));
 
-  var host = server.address().address
-  var port = server.address().port
+io.on('connection', function(socket){
+  console.log("a user is connected.");
 
-  console.log('Example app listening at http://%s:%s', host, port)
+  socket.on('load library', function(msg) {
+    loadFile('library.json', function(data) {
+      io.emit('library', data);
+    })
 
-})
+  });
+});
+
+http.listen(3000, function(){
+  console.log('listening on *:3000');
+});
+
+function loadFile(path, callback) {
+  fs.readFile('json/'+path, 'utf8', function(err, data) {
+    callback(JSON.parse(data));
+  })
+}
