@@ -21,7 +21,13 @@ define(["jquery", "underscore"], function($, _) {
       $(document).keydown(function(e) {
 
         if (e.altKey && e.which == 32) {
+          e.preventDefault();
+          $("#commandInput")[0].blur();
+
           $("#rightmenu").toggleClass("slide");
+//           $("#rightmenu")[0].addEventListener('webkitTransitionEnd', function() {
+//             $("#commandInput")[0].focus();
+//           }, false);
         }
       })
     }

@@ -43,6 +43,9 @@ body {
   background: #EEE;
   outline: none;
   border: none;
+  height: 16px;
+  padding: 8px;
+  width: 224px;
 }
 
 p.commandItem {
