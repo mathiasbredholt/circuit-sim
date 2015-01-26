@@ -7,7 +7,7 @@ define(["jquery", "ui/commands", "ui/wire", "socketio"], function($, commands, w
 
       socket.emit('load library');
       socket.on('library', function(data) {
-        commands.load(data);
+        commands.init(data);
       });
 
       //WIRE DRAWING
