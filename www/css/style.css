@@ -16,6 +16,7 @@ body {
 }
 
 #rightmenu {
+  -webkit-user-select: none;
   width: 256px;
   background: #DDD;
 }

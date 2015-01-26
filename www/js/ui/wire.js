@@ -33,47 +33,61 @@ define(["jquery"], function ($) {
 
       elem.mousemove(function(e) {
         if (dragging) {
-          var dX = beginX - e.clientX, dY = beginY - e.clientY, x, y, w, h;
-
-          x = beginX;
-          y = beginY;
+          var
+          x = beginX,
+              y = beginY,
+              dX = beginX - Math.round(e.clientX / 8) * 8,
+              dY = beginY - Math.round(e.clientY / 8) * 8,
+              w, h, dW, dH;
 
           if (Math.abs(dX) > Math.abs(dY)) {
-            w = Math.round(Math.abs(dX) / 8) * 8;
-            h = 2;
+            w = Math.abs(dX);
+            h = 0;
+            dW = w;
+            dH = h;
 
             if (dX > 0) {
               x = beginX - w;
+              dW = 0;
             }
 
-            wire.css("left", x);
-            wire.css("top", y - 1);
+            wire
+            .css("left", x)
+            .css("top", y - 1)
+            .css("width", w)
+            .css("height", h + 2);
+
+
           }
           else {
-            w = 2;
-            h = Math.round(Math.abs(dY) / 8) * 8;
+            w = 0;
+            h = Math.abs(dY);
+            dW = w;
+            dH = h;
+
             if (dY > 0) {
               y = beginY - h;
+              dH = 0;
             }
 
-            wire.css("left", x - 1);
-            wire.css("top", y);
+            wire
+            .css("left", x - 1)
+            .css("top", y)
+            .css("width", w + 2)
+            .css("height", h)
           }
 
-          wire
-          .css("width", w)
-          .css("height", h);
-
           wireEnd
-          .css("left", beginX + w - 4)
-          .css("top", beginY + h - 6);
+          .css("left", x + dW - 4)
+          .css("top", y + dH - 4);
+
         }
       });
 
       $(document).mouseup(function(e) {
         dragging = false;
-        wireStart.remove();
-        wireEnd.remove();
+        //         wireStart.remove();
+        //         wireEnd.remove();
       });
     }
   }
