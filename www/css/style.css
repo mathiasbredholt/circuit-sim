@@ -48,6 +48,15 @@ body {
   width: 224px;
 }
 
+#description {
+  position: absolute;
+  color: #DDD;
+  width: 100%;
+  top: 75%;
+  text-align: center;
+  font-size: 24px;
+}
+
 p.commandItem {
   padding: 2px;
   margin: 8px;
