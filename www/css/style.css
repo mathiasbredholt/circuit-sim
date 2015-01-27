@@ -30,12 +30,12 @@ div.layer {
   width: 256px;
   height: 100%;
   background: #EEE;
-  -webkit-transition: all 0.2s ease-in;
+  -webkit-transition: all 0.1s ease-in;
 }
 
 .slide {
   -webkit-transform: translate3d(-256px, 0, 0);
-  -webkit-transition: all 0.2s ease-in;
+  -webkit-transition: all 0.1s ease-in;
 }
 
 #commandInput {

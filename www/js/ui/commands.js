@@ -43,9 +43,9 @@ define(["jquery", "underscore", "components/component"], function($, _, Componen
           $("#commandInput")[0].blur();
 
           $("#rightmenu").toggleClass("slide");
-          //           $("#rightmenu")[0].addEventListener('webkitTransitionEnd', function() {
-          //             $("#commandInput")[0].focus();
-          //           }, false);
+//                     $("#rightmenu")[0].addEventListener('webkitTransitionEnd', function() {
+//                       $("#commandInput")[0].focus();
+//                     }, false);
         }
 
         var selected = $("#searchResult").find(".hover");
