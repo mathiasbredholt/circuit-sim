@@ -38,7 +38,7 @@ define(["jquery", "underscore", "components/component"], function($, _, Componen
 
       $(document).keydown(function(e) {
 
-        if (e.altKey && e.which == 32) {
+        if (e.which == 32) {
           e.preventDefault();
           $("#commandInput")[0].blur();
 
