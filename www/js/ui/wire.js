@@ -2,36 +2,35 @@ define(["jquery"], function ($) {
   return {
     drawWire: function() {
       var dragging, wireStart, wireEnd, wire, beginX, beginY, diagonalWire, wireLength, wireCenterX, wireCenterY, wireAngle;
-      var elem = $("#content");
 
-      elem.mousedown(function(e) {
+      $("#wiring")
+      .mousedown(function(e) {
         dragging = true;
         beginX = Math.round(e.clientX / 8) * 8;
         beginY = Math.round(e.clientY / 8) * 8;
 
-        elem.append(
+        $(this).append(
           wireStart = $("<div>")
           .addClass("wireEnd")
           .css("left", beginX - 4)
           .css("top", beginY - 4)
         );
 
-        elem.append(
+        $(this).append(
           wireEnd = $("<div>")
           .addClass("wireEnd")
           .css("left", beginX - 4)
           .css("top", beginY - 4)
         );
 
-        elem.append(
+        $(this).append(
           wire = $("<div>")
           .addClass("wire")
           .css("left", beginX)
           .css("top", beginY)
         );
-      });
-
-      elem.mousemove(function(e) {
+      })
+      .mousemove(function(e) {
         if (dragging) {
           var
               x1 = beginX,
