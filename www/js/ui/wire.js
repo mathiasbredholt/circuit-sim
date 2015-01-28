@@ -60,7 +60,7 @@ define(["jquery"], function ($) {
             .css("top", wireCenterY)
             .css("width", wireLength)
             .css("height", 2)
-            .css("transform", "rotate("+wireAngle+"deg)");
+            .css("transform", "rotateZ("+wireAngle+"deg)");
 
           wireEnd
           .css("left", x2 - 4)
