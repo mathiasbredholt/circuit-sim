@@ -1,7 +1,7 @@
 define(["jquery"], function($) {
   return {
     create: function(component) {
-
+      
       $("#content").append(
         $("<div>")
         .html(component.name)

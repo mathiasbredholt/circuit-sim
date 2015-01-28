@@ -1,6 +1,5 @@
 define(["jquery", "underscore", "components/component"], function($, _, Component) {
-  function UpdateList(components, input) {
-    var result = _.filter(components, function(str) { return str.toLowerCase().search(input) != -1 });
+  function UpdateList(result) {
 
     var results = $("#searchResult");
     results.empty();
@@ -25,15 +24,21 @@ define(["jquery", "underscore", "components/component"], function($, _, Componen
   }
 
   return {
-    init: function(library) {
-      var components = _.pluck(library["components"], "name");
-
+    init: function(socket) {
+      var lastInput = "";
+      
+      socket.on("searchResult", function(data) {
+        UpdateList(data);
+        console.log(data);
+      })
+      
       $("#commandInput").keyup(function(e) {
         var input = $(this).val();
-
-        if (e.which != 38 && e.which != 40 && e.which != 13) {
-          UpdateList(components, input);
+        if (input != lastInput) {
+//          UpdateList();
+          socket.emit("search", input);
         }
+        
       })
 
       $(document).keydown(function(e) {
@@ -72,7 +77,7 @@ define(["jquery", "underscore", "components/component"], function($, _, Componen
         if (e.which == 13) {
           e.preventDefault();
           console.log(selected.html());
-          Component.create(_.find(library["components"], { name: selected.html() }));
+//          Component.create(_.find(library, { name: selected.html() }));
         }
       })
 
