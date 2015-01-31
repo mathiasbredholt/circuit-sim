@@ -1,5 +1,9 @@
 define(["jquery", "underscore", "components/component"], function($, _, Component) {
+  var selectedIndex = 0;
+  var numberOfItems = 0;
+  
   function UpdateList(result) {
+    numberOfItems = result.length;
 
     var results = $("#searchResult");
     results.empty();
@@ -8,19 +12,44 @@ define(["jquery", "underscore", "components/component"], function($, _, Componen
       var elem = $("<li>")
       .addClass("commandItem")
       .html(result[i])
-      .hover(function() {
-        $("#searchResult").removeClass("hover");
-        $(this).addClass("hover");
-      }, function() {
-        $(this).removeClass("hover");
+      .mouseover(function() {
+        selectedIndex = $(this).index();
+        SelectItem(selectedIndex);
       });
 
-      if (i == 0) {
+      if (i == selectedIndex) {
         elem.addClass("hover");
       }
 
       results.append(elem);
     }
+  }
+
+  function SelectItem(index) {
+    $("#searchResult li").removeClass("hover");
+    $("#searchResult li:eq("+index+")").addClass("hover");
+  }
+  
+  function SelectNextItem() {
+    if (selectedIndex < numberOfItems - 1) {
+      selectedIndex++;
+    }
+    else {
+      selectedIndex = 0;
+    }
+    
+    SelectItem(selectedIndex);
+  }
+  
+  function SelectPrevItem() {
+    if (selectedIndex > 0) {
+      selectedIndex--;
+    }
+    else {
+      selectedIndex = numberOfItems - 1;
+    }
+    
+    SelectItem(selectedIndex);
   }
 
   return {
@@ -29,12 +58,12 @@ define(["jquery", "underscore", "components/component"], function($, _, Componen
       
       socket.on("searchResult", function(data) {
         UpdateList(data);
-        console.log(data);
       })
       
       $("#commandInput").keyup(function(e) {
         var input = $(this).val();
         if (input != lastInput) {
+          lastInput = input;
 //          UpdateList();
           socket.emit("search", input);
         }
@@ -57,21 +86,12 @@ define(["jquery", "underscore", "components/component"], function($, _, Componen
 
         if (e.which == 38) {
           e.preventDefault();
-          if (selected.prev().length) {
-            selected
-            .removeClass("hover")
-            .prev().addClass("hover");
-          }
-
+          SelectPrevItem();
         }
 
         if (e.which == 40) {
           e.preventDefault();
-          if (selected.next().length) {
-            selected
-            .removeClass("hover")
-            .next().addClass("hover");
-          }
+          SelectNextItem();
         }
 
         if (e.which == 13) {
