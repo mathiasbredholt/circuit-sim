@@ -69,6 +69,16 @@ div.layer {
 li.commandItem {
   padding: 2px;
   font-size: 14px;
+  line-height: 18px;
+  height: 18px;
+}
+
+span.commandType {
+  font-size: 12px;
+  color: #999;
+  float: right;
+  margin-right: 8px;
+  line-height: 18px;
 }
 
 .hover {

@@ -8,7 +8,9 @@ var fuzzy = require('fuzzy');
 var library, options = {
   pre: '',
   post: '',
-  extract: function(elem) { return elem.name; }
+  extract: function(elem) { 
+    return elem.name; 
+  }
 }
 
 LoadLibrary();
@@ -42,6 +44,6 @@ function LoadLibrary(callback) {
 
 function SearchLibrary(input, callback) {
   var results = fuzzy.filter(input, library, options);
-  var matches = results.map(function(elem) { return elem.string });
+  var matches = results.map(function(elem) { return elem.original });
   callback(matches);
 }

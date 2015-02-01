@@ -1,12 +1,11 @@
-{
-  "components": [
-    { "name": "Resistor" },
-    { "name": "Capacitor" },
-    { "name": "Voltage Supply" },
-    { "name": "Transistor" },
-    { "name": "Inductor" },
-    { "name": "NAND Gate" },
-    { "name": "OR Gate" },
-    { "name": "Flip flop"}
-  ]
-}
+[
+  { "name": "New Circuit", "type": "Command" },
+  { "name": "Add Resistor", "type": "Component" },
+  { "name": "Add Capacitor", "type": "Component" },
+  { "name": "Add Voltage Supply", "type": "Component" },
+  { "name": "Add Transistor", "type": "Component" },
+  { "name": "Add Inductor", "type": "Component" },
+  { "name": "Add NAND Gate", "type": "Component" },
+  { "name": "Add OR Gate", "type": "Component" },
+  { "name": "Add Flip flop", "type": "Component" }
+]

@@ -11,11 +11,17 @@ define(["jquery", "underscore", "components/component"], function($, _, Componen
     for (i = 0; i < result.length; i++) {
       var elem = $("<li>")
       .addClass("commandItem")
-      .html(result[i])
+      .html(result[i].name)
       .mouseover(function() {
         selectedIndex = $(this).index();
         SelectItem(selectedIndex);
       });
+      
+      elem.append(
+        $("<span>")
+        .addClass("commandType")
+        .html(result[i].type)
+      );
 
       if (i == selectedIndex) {
         elem.addClass("hover");
