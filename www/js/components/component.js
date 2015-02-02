@@ -1,26 +1,41 @@
-define(["jquery"], function($) {
+define(["jquery", "server/server"], function($, Server) {
   return {
     create: function(component) {
+      var dragging = false, origin = { left: 0, top: 0 };
       
-      $("#content").append(
-        $("<div>")
-        .html(component.name)
+      Server.send("getImg", component.img);
+      
+      Server.on("rcvImg", function(data) {
+        var elem = $("<div>")
+        .html(data)
         .addClass("component")
         .offset({ top: 64, left: 64 })
-        .mousedown(function() {
-          var self = $(this), dragging = true;
-
-          $(document).mouseup(function() {
-            dragging = false;
-          })
-          .mousemove(function(e) {
-            if (dragging) {
-              self.css("left", Math.round((e.clientX - (self.width() / 2) / 8) * 8));
-              self.css("top", Math.round((e.clientY - (self.height() / 2) / 8) * 8));
-            }
-          })
+        .hover(function() {
+          $(this).toggleClass("componentHover");
         })
-      );
+        .mousedown(function(e) {
+          dragging = true;
+          origin.left = e.clientX - elem.offset().left;
+          origin.top = e.clientY - elem.offset().top;
+        });
+        
+        $(document)
+        .mouseup(function() {
+          dragging = false;
+        })
+        .mousemove(function(e) {
+          if (dragging) {
+            elem.offset({
+              left: Math.round((e.clientX - origin.left) / 8) * 8,
+              top: Math.round((e.clientY - origin.top) / 8) * 8
+            });
+          }
+        });
+
+        $("#content").append(elem);
+        
+        Server.remove("rcvImg");
+      })
     }
   }
 });

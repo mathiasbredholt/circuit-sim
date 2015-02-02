@@ -29,6 +29,12 @@ io.on('connection', function(socket){
     SearchLibrary(msg, function(data) {
       io.emit('searchResult', data);
     });
+  });
+  
+  socket.on('getImg', function(path) {
+    LoadImage(path, function(data) {
+      io.emit('rcvImg', data);
+    });
   })
 });
 
@@ -46,4 +52,10 @@ function SearchLibrary(input, callback) {
   var results = fuzzy.filter(input, library, options);
   var matches = results.map(function(elem) { return elem.original });
   callback(matches);
+}
+
+function LoadImage(path, callback) {
+  fs.readFile('graphics/'+path, 'utf8', function(err, data) {
+    callback(data);
+  });
 }

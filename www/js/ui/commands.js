@@ -1,21 +1,23 @@
-define(["jquery", "underscore", "components/component"], function($, _, Component) {
-  var selectedIndex = 0;
-  var numberOfItems = 0;
+define(["jquery", "components/component", "server/server"], function($, Component, Server) {
+  var selectedIndex = 0, 
+      numberOfItems = 0,
+      result;
   
-  function UpdateList(result) {
+  function UpdateList() {
     numberOfItems = result.length;
 
     var results = $("#searchResult");
     results.empty();
 
-    for (i = 0; i < result.length; i++) {
+    for (i = 0; i < numberOfItems; i++) {
       var elem = $("<li>")
       .addClass("commandItem")
       .html(result[i].name)
       .mouseover(function() {
         selectedIndex = $(this).index();
         SelectItem(selectedIndex);
-      });
+      })
+      .click(Select);
       
       elem.append(
         $("<span>")
@@ -28,6 +30,11 @@ define(["jquery", "underscore", "components/component"], function($, _, Componen
       }
 
       results.append(elem);
+    }
+    
+    if (selectedIndex > numberOfItems) {
+      selectedIndex = numberOfItems - 1;
+      SelectItem(selectedIndex);
     }
   }
 
@@ -57,13 +64,20 @@ define(["jquery", "underscore", "components/component"], function($, _, Componen
     
     SelectItem(selectedIndex);
   }
+  
+  function Select() {
+    Component.create(result[selectedIndex])
+//    Component.create(_.find(library, { name: selected.html() }));
+    
+  }
 
   return {
-    init: function(socket) {
+    init: function() {
       var lastInput = "";
       
-      socket.on("searchResult", function(data) {
-        UpdateList(data);
+      Server.on("searchResult", function(data) {
+        result = data;
+        UpdateList();
       })
       
       $("#commandInput").keyup(function(e) {
@@ -71,7 +85,7 @@ define(["jquery", "underscore", "components/component"], function($, _, Componen
         if (input != lastInput) {
           lastInput = input;
 //          UpdateList();
-          socket.emit("search", input);
+          Server.send("search", input);
         }
         
       })
@@ -102,8 +116,7 @@ define(["jquery", "underscore", "components/component"], function($, _, Componen
 
         if (e.which == 13) {
           e.preventDefault();
-          console.log(selected.html());
-//          Component.create(_.find(library, { name: selected.html() }));
+          Select();
         }
       })
 

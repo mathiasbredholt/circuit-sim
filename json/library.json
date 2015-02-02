@@ -1,6 +1,10 @@
 [
   { "name": "New Circuit", "type": "Command" },
-  { "name": "Add Resistor", "type": "Component" },
+  { 
+    "name": "Add Resistor", 
+    "type": "Component",
+    "img": "resistor.svg"
+  },
   { "name": "Add Capacitor", "type": "Component" },
   { "name": "Add Voltage Supply", "type": "Component" },
   { "name": "Add Transistor", "type": "Component" },
