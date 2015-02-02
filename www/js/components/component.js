@@ -14,13 +14,13 @@ define(["jquery", "server/server"], function($, Server) {
           dragging = true;
           origin.left = e.clientX - elem.offset().left;
           origin.top = e.clientY - elem.offset().top;
-          elem.toggleClass("componentHover");
+          elem.addClass("componentHover");
         });
         
         $(document)
         .mouseup(function() {
           dragging = false;
-          elem.toggleClass("componentHover");
+          elem.removeClass("componentHover");
         })
         .mousemove(function(e) {
           if (dragging) {

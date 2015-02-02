@@ -3,14 +3,13 @@ require.config({
     'socketio': {
       exports: 'io'
     },
-    'svgjs': {
-      exports: 'SVG'
+    'snap.svg': {
+      exports: 'Snap'
     }
   },
 	paths: {
     "jquery": 'https://code.jquery.com/jquery-2.1.3.min',
     "underscore": 'https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min',
-    "svgjs": 'https://cdnjs.cloudflare.com/ajax/libs/svg.js/1.0.1/svg.min',
     app: 'app',
     ui: 'ui',
 		components: 'components',
