@@ -10,18 +10,17 @@ define(["jquery", "server/server"], function($, Server) {
         .html(data)
         .addClass("component")
         .offset({ top: 64, left: 64 })
-        .hover(function() {
-          $(this).toggleClass("componentHover");
-        })
         .mousedown(function(e) {
           dragging = true;
           origin.left = e.clientX - elem.offset().left;
           origin.top = e.clientY - elem.offset().top;
+          elem.toggleClass("componentHover");
         });
         
         $(document)
         .mouseup(function() {
           dragging = false;
+          elem.toggleClass("componentHover");
         })
         .mousemove(function(e) {
           if (dragging) {

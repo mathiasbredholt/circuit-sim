@@ -1,4 +1,4 @@
-define(["jquery", "server/server", "ui/commands", "ui/wire"], function($, Server, Commands, wire) {
+define(["jquery", "server/server", "ui/commands", "ui/wire", "ui/svgwire"], function($, Server, Commands, wire, svgwire) {
   return {
     init: function() {
       console.log("APPLICATION INIT");
@@ -8,7 +8,8 @@ define(["jquery", "server/server", "ui/commands", "ui/wire"], function($, Server
       Commands.init();
 
       //WIRE DRAWING
-      wire.drawWire();
+//      wire.drawWire();
+      svgwire.init();
     }
   }
 });
