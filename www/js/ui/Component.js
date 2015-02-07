@@ -63,6 +63,8 @@ define(function (require, exports, module) {
 	function Component(cmd) {
 		var self = this;
 
+		self.name = cmd.name;
+
 		loadImageFromServer(cmd.img, function (img) {
 			self.element = drawComponent(img);
 			configureHandlers(self);
