@@ -1,28 +1,30 @@
 /*global require*/
 require.config({
-  shim: {
-    'socketio': {
-      exports: 'io'
-    },
-    'snap.svg': {
-      exports: 'Snap'
-    }
-  },
+	shim: {
+		"socketio": {
+			exports: "io"
+		},
+		"snap.svg": {
+			exports: "Snap"
+		},
+		"jquery": {
+			exports: "$"
+		}
+	},
 	paths: {
-    "jquery": 'https://code.jquery.com/jquery-2.1.3.min',
-    "underscore": 'https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min',
-    app: 'app',
-    ui: 'ui',
-    server: 'server',
-    socketio: '/socket.io/socket.io'
+		app: "app",
+		ui: "ui",
+		server: "server",
+		socketio: "/socket.io/socket.io",
+		thirdparty: "thirdparty"
 	}
 });
 
 require(["app/app"], function (app) {
-	'use strict';
-  app.init();
+	"use strict";
+	app.init();
 
-//   document.oncontextmenu = function(e) {
-//     e.preventDefault();
-//   }
+	//   document.oncontextmenu = function(e) {
+	//     e.preventDefault();
+	//   }
 });

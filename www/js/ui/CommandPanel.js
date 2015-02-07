@@ -1,12 +1,17 @@
 /*jslint plusplus: true */
 /*global define*/
-define(["jquery", "server/server", "app/command"], function ($, Server, Command) {
-	'use strict';
+define(function (require, exports, module) {
+	"use strict";
+	
+	require("thirdparty/jquery");
+
+	var Command = require("app/command"),
+		  Server  = require("server/server");
+
 	var selectedIndex = 0,
 		numberOfItems = 0,
 		result,
 		display = false,
-		i,
 		elem;
 
 	function selectItem(index) {
@@ -42,11 +47,10 @@ define(["jquery", "server/server", "app/command"], function ($, Server, Command)
 	}
 
 	function updateList() {
+		var results = $("#searchResult"),
+			i;
 		numberOfItems = result.length;
-
-		var results = $("#searchResult");
 		results.empty();
-
 		for (i = 0; i < numberOfItems; i++) {
 			elem = $("<li>")
 				.addClass("commandItem")
@@ -69,53 +73,54 @@ define(["jquery", "server/server", "app/command"], function ($, Server, Command)
 		}
 	}
 
-	return {
-		init: function () {
-			var lastInput = "";
-			Server.on("searchResult", function (data) {
-				result = data;
-				updateList();
+	function show() {
+		display = !display;
+		if (display) {
+			$("#commandpanel").one("webkitTransitionEnd", function () {
+				$("#commandInput")[0].focus();
+				$("#commandInput")[0].select();
 			});
-			$("#commandInput").keyup(function (e) {
-				var input = $(this).val();
-				if (input !== lastInput) {
-					lastInput = input;
-					//          UpdateList();
-					Server.send("search", input);
-				}
-			});
-			$(document).keydown(function (e) {
-				var selected = $("#searchResult").find(".hover");
+		} else {
+			$("#commandInput")[0].blur();
+		}
 
-				if (e.which === 38) {
-					e.preventDefault();
-					selectPrevItem();
-				}
+		$("#commandpanel").toggleClass("slide");
+	}
 
-				if (e.which === 40) {
-					e.preventDefault();
-					selectNextItem();
-				}
+	function init() {
+		var lastInput = "";
+		Server.on("searchResult", function (data) {
+			result = data;
+			updateList();
+		});
+		$("#commandInput").keyup(function (e) {
+			var input = $(this).val();
+			if (input !== lastInput) {
+				lastInput = input;
+				//          UpdateList();
+				Server.send("search", input);
+			}
+		});
+		$(document).keydown(function (e) {
+			var selected = $("#searchResult").find(".hover");
 
-				if (e.which === 13) {
-					e.preventDefault();
-					select();
-				}
-			});
-
-		},
-		show: function () {
-			display = !display;
-			if (display) {
-				$("#commandpanel").one("webkitTransitionEnd", function () {
-					$("#commandInput")[0].focus();
-					$("#commandInput")[0].select();
-				});
-			} else {
-				$("#commandInput")[0].blur();
+			if (e.which === 38) {
+				e.preventDefault();
+				selectPrevItem();
 			}
 
-			$("#commandpanel").toggleClass("slide");
-		}
-	};
+			if (e.which === 40) {
+				e.preventDefault();
+				selectNextItem();
+			}
+
+			if (e.which === 13) {
+				e.preventDefault();
+				select();
+			}
+		});
+	}
+
+	exports.init = init;
+	exports.show = show;
 });

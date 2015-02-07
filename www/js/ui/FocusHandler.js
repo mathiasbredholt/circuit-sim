@@ -1,24 +1,22 @@
-define(["UI/Inspector"], function (Inspector) {
-	var tabIndex = 0,
-		hasFocus;
+/*jslint plusplus: true */
+/*global define*/
+define(function (require, exports, module) {
+	"use strict";
+	
+	var Inspector = require("ui/Inspector");
+	
+	var hasFocus;
+	
+	function setFocus(object) {
+		if (hasFocus != null) {
+			hasFocus.element.removeClass('focus');
+		}
 
-	return {
-		getTabIndex: function () {
-			return tabIndex;
+		object.element.addClass('focus');
 
-			tabIndex++;
-		},
-		setFocus: function (object) {
-			if (hasFocus != null) {
-				console.log(hasFocus.element[0].offsetTop);
-				hasFocus.element.removeClass('focus');
-			}
-
-			object.element.addClass('focus');
-
-			hasFocus = object;
-			Inspector.update(object);
-		},
-		hasFocus: hasFocus
+		hasFocus = object;
+		Inspector.update(object);
 	}
-})
+	
+	exports.setFocus = setFocus;
+});

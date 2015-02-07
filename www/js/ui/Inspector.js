@@ -1,6 +1,9 @@
 /*global define*/
-define(["jquery"], function ($) {
-	'use strict';
+define(function (require, exports, module) {
+	"use strict";
+	
+	require("thirdparty/jquery");
+	
 	return {
 		init: function () {
 			$("#inspector > .inspectorTitle").html("Nothing to inspect...");
