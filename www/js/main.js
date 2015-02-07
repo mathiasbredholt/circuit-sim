@@ -1,3 +1,4 @@
+/*global require*/
 require.config({
   shim: {
     'socketio': {
@@ -12,13 +13,13 @@ require.config({
     "underscore": 'https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min',
     app: 'app',
     ui: 'ui',
-		components: 'components',
     server: 'server',
     socketio: '/socket.io/socket.io'
 	}
 });
 
 require(["app/app"], function (app) {
+	'use strict';
   app.init();
 
 //   document.oncontextmenu = function(e) {

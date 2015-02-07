@@ -1,0 +1,15 @@
+body {
+  margin: 0;
+  font-family: "Helvetica";
+  height: 100%;
+  cursor: default;
+  overflow: hidden;
+}
+
+div {
+  -webkit-user-select: none;
+}
+
+svg {
+  display: block;
+}

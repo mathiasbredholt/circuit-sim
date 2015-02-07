@@ -1,0 +1,62 @@
+#container {
+  display: flex;
+}
+
+#content {
+  width: 100%;
+}
+
+#inspector {
+  position: absolute;
+  width: 320px;
+  height: 240px;
+  display: none;
+  background: #EEE;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+  top: 128px;
+  border: 2px solid #BBB;
+}
+
+#commandInput {
+  margin: 8px;
+  font-size: 16px;
+  font-family: "Arial";
+  background: #FAFAFA;
+  outline: none;
+  border: none;
+  height: 16px;
+  padding: 8px;
+  width: 224px;
+  display: block;
+}
+
+#description {
+  position: absolute;
+  color: #DDD;
+  width: 100%;
+  top: 75%;
+  text-align: center;
+  font-size: 24px;
+}
+
+#searchResult {
+  margin: 8px;
+  padding: 0;
+  list-style-type: none;
+}
+
+#commandpanel {
+  position: absolute;
+  width: 256px;
+  height: 100%;
+  background: #EEE;
+  -webkit-transition: all 0.1s ease-in;
+}
+
+.slide {
+  -webkit-transform: translate3d(-256px, 0, 0);
+  -webkit-transition: all 0.1s ease-in;
+}

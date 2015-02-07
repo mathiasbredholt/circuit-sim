@@ -1,37 +1,45 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Electronic Circuit Simulator</title>
-        <link rel="stylesheet" href="css/style.css">
-        <script data-main="js/main.js" src="js/require.js"></script>
-    </head>
-    <body>
-        <div id="container">
-            <div id="content">
-                <div id="description">
-                    Welcome to Electronic Circuit Simulator (vi skal finde et bedre navn)<br>
-                    Space for command panel.
-                </div>
-                <div class="layer">
-                    <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-                        <defs>
-                            <pattern id="smallGrid" width="8" height="8" patternUnits="userSpaceOnUse">
-                                <path d="M 8 0 L 0 0 0 8" fill="none" stroke="#BBB" stroke-width="0.5"/>
-                            </pattern>
-                        </defs>
-                        <rect width="100%" height="100%" fill="url(#smallGrid)" />
-                    </svg>
-                </div>
-                <div class="layer">
-                  <svg id="wiring" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg"></svg>
-                </div>
-            </div>
-            <div id="rightmenu">
-                <input id="commandInput" type="text" placeholder="Enter command...">
 
-                <ul id="searchResult">
-                </ul>
-            </div>
-        </div>
-    </body>
+<head>
+	<title>Electronic Circuit Simulator</title>
+	<link rel="stylesheet" href="css/default.css">
+	<link rel="stylesheet" href="css/objects.css">
+	<link rel="stylesheet" href="css/classes.css">
+	<script data-main="js/main.js" src="js/require.js"></script>
+</head>
+
+<body>
+	<div id="container">
+		<div id="content">
+			<div id="description">
+				<br> Press Space to show the command panel
+				<br> Cmd + I to open the inspector
+			</div>
+			<div class="layer">
+				<svg id="grid" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" version="1.2" baseProfile="tiny">
+					<defs>
+						<pattern id="smallGrid" width="8" height="8" patternUnits="userSpaceOnUse">
+							<path d="M 8 0 L 0 0 0 8" fill="none" stroke="#DDD" stroke-width="0.5" />
+						</pattern>
+					</defs>
+					<rect width="100%" height="100%" fill="url(#smallGrid)" />
+				</svg>
+			</div>
+			<div class="layer">
+				<svg id="wiring" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" version="1.2" baseProfile="tiny"></svg>
+			</div>
+		</div>
+		<div id="inspector">
+			<h2 class="inspectorTitle"></h2>
+		</div>
+		<div id="commandpanel">
+			<input id="commandInput" type="text" tabindex="-1" placeholder="Enter command...">
+
+			<ul id="searchResult">
+			</ul>
+		</div>
+	</div>
+</body>
+
 </html>

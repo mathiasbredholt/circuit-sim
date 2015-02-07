@@ -1,78 +1,59 @@
-define(["jquery"], function ($) {
+define(["jquery", "snap.svg"], function ($) {
+  var dragging,
+      wireStart,
+      wireEnd,
+      wire,
+      x1, y1, x2, y2, dx, dy;
+  
   return {
-    drawWire: function() {
-      var dragging, wireStart, wireEnd, wire, beginX, beginY, diagonalWire, wireLength, wireCenterX, wireCenterY, wireAngle;
-
+    
+    init: function() {
+      var s = Snap("#wiring");
+      
       $("#wiring")
-      .mousedown(function(e) {
-        dragging = true;
-        beginX = Math.round(e.clientX / 8) * 8;
-        beginY = Math.round(e.clientY / 8) * 8;
+      .dblclick(function(e) {
+        dragging = !dragging;
+        x1 = Math.round(e.clientX / 8) * 8;
+        y1 = Math.round(e.clientY / 8) * 8;
+        
+        if (dragging) {
+          wire = s.line(x1, y1, x1, y1)
+          .attr({strokeWidth:2, stroke:"black", strokeLinecap:"round"});
+//          wireStart = s.circle(x1, y1, 4);
+//          wireEnd = s.circle(x1, y1, 4);
+        }
+      })
+      .click(function(e) {
+        if (dragging) {
+          x1 = x2;
+          y1 = y2;
 
-        $(this).append(
-          wireStart = $("<div>")
-          .addClass("wireEnd")
-          .css("left", beginX - 4)
-          .css("top", beginY - 4)
-        );
-
-        $(this).append(
-          wireEnd = $("<div>")
-          .addClass("wireEnd")
-          .css("left", beginX - 4)
-          .css("top", beginY - 4)
-        );
-
-        $(this).append(
-          wire = $("<div>")
-          .addClass("wire")
-          .css("left", beginX)
-          .css("top", beginY)
-        );
+          wire = s.line(x1, y1, x1, y1)
+          .attr({strokeWidth:2, stroke:"black", strokeLinecap:"round"});
+//          wireStart = s.circle(x1, y1, 4);
+//          wireEnd = s.circle(x1, y1, 4);
+        }
       })
       .mousemove(function(e) {
         if (dragging) {
-          var
-              x1 = beginX,
-              y1 = beginY,
-              x2 = Math.round(e.clientX / 8) * 8,
-              y2 = Math.round(e.clientY / 8) * 8,
-              dX = x1 - x2,
-              dY = y1 - y2;
-
+          x2 = Math.round(e.clientX / 8) * 8;
+          y2 = Math.round(e.clientY / 8) * 8;
+          dx = x1 - x2,
+          dy = y1 - y2;
+          
           if (!e.altKey) {
-            if (Math.abs(dX) > Math.abs(dY)) {
+            if (Math.abs(dx) > Math.abs(dy)) {
               y2 = y1;
-              dY = 0;
+              dy = 0;
             } else {
               x2 = x1;
-              dX = 0;
+              dx = 0;
             }
           }
-
-          wireLength = Math.sqrt(Math.pow(dX,2)+Math.pow(dY,2));
-          wireCenterX = x1 - (dX / 2);
-          wireCenterY = y1 - (dY / 2);
-          wireAngle = Math.atan2((dY),(dX))*(180/Math.PI);
-
-          wire
-            .css("left", wireCenterX - (wireLength / 2))
-            .css("top", wireCenterY)
-            .css("width", wireLength)
-            .css("height", 2)
-            .css("transform", "rotateZ("+wireAngle+"deg)");
-
-          wireEnd
-          .css("left", x2 - 4)
-          .css("top", y2 - 4);
-
+          
+          wire.attr({ "x2": x2 , "y2": y2 });
+//          wireEnd.attr({ "cx": x2, "cy": y2 });
         }
-      });
-
-      $(document).mouseup(function(e) {
-        dragging = false;
-        //         wireStart.remove();
-        //         wireEnd.remove();
       });
     }
   }
