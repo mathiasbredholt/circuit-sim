@@ -1,17 +1,21 @@
 define(function (require, exports, module) {
 	"use strict";
-	
+
 	require("thirdparty/jquery");
 	require("thirdparty/snap.svg");
-	
+	var Circuitnode = require("app/circuitnode");
+
 	var dragging,
 		wireStart,
 		wireEnd,
 		wire,
+		nodes = new Array(),
+		cn = new Circuitnode(),
 		x1, y1, x2, y2, dx, dy;
 
 	return {
 
+		nodes: nodes,
 		init: function () {
 			var s = Snap("#wiring");
 
@@ -21,6 +25,8 @@ define(function (require, exports, module) {
 					x1 = Math.round(e.clientX / 8) * 8;
 					y1 = Math.round(e.clientY / 8) * 8;
 
+					cn.addPoint(x1, y1);
+				
 					if (dragging) {
 						wire = s.line(x1, y1, x1, y1)
 							.attr({
@@ -28,8 +34,12 @@ define(function (require, exports, module) {
 								stroke: "black",
 								strokeLinecap: "round"
 							});
+						
 						//          wireStart = s.circle(x1, y1, 4);
 						//          wireEnd = s.circle(x1, y1, 4);
+					} else {
+						nodes.push(cn);	//When the wire is complete, add the current node to the list of nodes
+						cn = new Circuitnode();
 					}
 				})
 				.click(function (e) {
@@ -43,6 +53,8 @@ define(function (require, exports, module) {
 								stroke: "black",
 								strokeLinecap: "round"
 							});
+						
+						cn.addPoint(x1, y1);
 						//          wireStart = s.circle(x1, y1, 4);
 						//          wireEnd = s.circle(x1, y1, 4);
 					}
