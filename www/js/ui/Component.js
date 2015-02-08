@@ -8,14 +8,20 @@ define(function (require, exports, module) {
 	var Server = require("server/server"),
 		FocusHandler = require("ui/FocusHandler");
 
-	function drawComponent(img, self) {
-		var elem = $("<div>")
+	function drawComponent(content, img) {
+		var param, elem = $("<div>")
 			.html(img)
 			.addClass("component")
 			.offset({
-				top: 64,
-				left: 64
+				top: 256,
+				left: 256
 			});
+
+		if (content.name === "Resistor" || content.name === "Capacitor" || content.name === "Voltage Supply") {
+			param = content.parameters[0];
+			elem.append($("<div>").html(param.value + param.unit).addClass("componentLabel"));
+		}
+
 		$("#content").append(elem);
 		return elem;
 	}
@@ -60,13 +66,14 @@ define(function (require, exports, module) {
 		});
 	}
 
-	function Component(cmd) {
+	function Component(content) {
 		var self = this;
 
-		self.name = cmd.name;
+		self.name = content.name;
+		self.parameters = content.parameters;
 
-		loadImageFromServer(cmd.img, function (img) {
-			self.element = drawComponent(img);
+		loadImageFromServer(content.img, function (img) {
+			self.element = drawComponent(content, img);
 			configureHandlers(self);
 		});
 	}

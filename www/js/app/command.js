@@ -13,7 +13,7 @@ define(function (require, exports, module) {
 			$("#grid").toggle();
 			break;
 		case "add_component":
-			var component = new Component(cmd);
+			var component = new Component(cmd.content);
 			break;
 		}
 	}

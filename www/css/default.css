@@ -1,15 +1,26 @@
 body {
-  margin: 0;
-  font-family: "Helvetica";
-  height: 100%;
-  cursor: default;
-  overflow: hidden;
+	margin: 0;
+	font-family: "Helvetica";
+	height: 100%;
+	cursor: default;
+	overflow: hidden;
 }
 
 div {
-  -webkit-user-select: none;
+	-webkit-user-select: none;
 }
 
 svg {
-  display: block;
+	display: block;
+}
+
+input {
+	margin: 8px;
+	font-size: 14px;
+	font-family: "Arial";
+	background: #FAFAFA;
+	outline: none;
+	border: none;
+	height: 16px;
+	display: block;
 }

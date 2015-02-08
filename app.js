@@ -9,7 +9,7 @@ var library, options = {
   pre: '',
   post: '',
   extract: function(elem) { 
-    return elem.name; 
+    return elem.title; 
   }
 }
 
