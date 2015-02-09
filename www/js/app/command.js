@@ -1,23 +1,22 @@
 /*jslint plusplus: true */
 /*global define, $*/
 define(function (require, exports, module) {
-	"use strict";
+    "use strict";
 
-	require("thirdparty/jquery");
+    require("thirdparty/jquery");
 
-	var UI = require("ui/UI"),
-		Component = require("ui/Component");
+    var UI = require("ui/UI");
 
-	function run(cmd) {
-		switch (cmd.cmd) {
-		case "toggle_grid":
-			$("#grid").toggle();
-			break;
-		case "add_component":
-			var component = new Component(cmd.content, UI.container);
-			break;
-		}
-	}
+    function run(cmd) {
+        switch (cmd.cmd) {
+        case "toggle_grid":
+            $("#grid").toggle();
+            break;
+        case "add_component":
+            UI.addComponent(cmd.content);
+            break;
+        }
+    }
 
-	exports.run = run;
+    exports.run = run;
 });

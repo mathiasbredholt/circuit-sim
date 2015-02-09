@@ -26,5 +26,5 @@ input {
 }
 
 div:focus {
-	outline: 2px dashed #444;
+	outline: 1px dashed #999;
 }

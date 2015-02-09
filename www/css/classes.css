@@ -40,6 +40,7 @@
 
 .component {
 	position: absolute;
+	-webkit-transform: rotate(0);
 }
 
 .componentHover {
@@ -90,22 +91,37 @@
 }
 
 .inspectorParam {
+	float: left;
 	margin: 8px;
 }
 
 .inspectorParamInput {
-	float: left;
-	width: 96px;
+	float: right;
+	width: 64px;
 }
 
 .inspectorParamUnit {
 	margin: 8px;
-	width: 48px;
+	width: 32px;
 	text-align: right;
+	float: right;
 }
 
 .componentLabel {
 	font-size: 13px;
-	width: 64px;
 	text-align: center;
+	width: 64px;
+	margin-top: -13px;
+}
+
+.terminal {
+	position: absolute;
+	opacity: 0;
+	background: #fff;
+	border: 4px solid #000;
+	border-radius: 4px;
+}
+
+.terminal:hover {
+	opacity: 1;
 }

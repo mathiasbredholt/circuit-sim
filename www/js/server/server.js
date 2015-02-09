@@ -14,4 +14,4 @@ define(["socketio"], function (io) {
 			socket.removeListener(msg);
 		}
 	}
-})
+});

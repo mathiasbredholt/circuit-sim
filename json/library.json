@@ -1,68 +1,89 @@
-[
-	{
-		"title": "New Circuit",
-		"type": "Command"
-},
-	{
-		"title": "Toggle grid",
-		"type": "Command",
-		"cmd": "toggle_grid"
-},
-	{
-		"title": "Add Resistor",
-		"cmd": "add_component",
-		"type": "Component",
-		"content": {
-			"name": "Resistor",
-			"img": "resistor.svg",
-			"script": "resistor.js",
-			"parameters": [{
-				"name": "Resistance",
-				"value": 1,
-				"unit": "k&Omega;"
-			}]
-		}
+[{
+    "title": "New Circuit",
+    "type": "Command"
 }, {
-		"title": "Add Capacitor",
-		"cmd": "add_component",
-		"type": "Component",
-		"content": {
-			"name": "Capacitor",
-			"img": "capacitor.svg",
-			"script": "capacitor.js",
-			"parameters": [{
-				"name": "Capacitance",
-				"value": "1",
-				"unit": "uF"
-			}]
-		}
+    "title": "Toggle grid",
+    "type": "Command",
+    "cmd": "toggle_grid"
 }, {
-		"title": "Add Voltage Supply",
-		"cmd": "add_component",
-		"type": "Component",
-		"content": {
-			"name": "Voltage Supply",
-			"img": "voltage.svg",
-			"script": "voltage.js",
-			"parameters": [{
-				"name": "Voltage",
-				"value": "5",
-				"unit": "V"
-			}]
-		}
+    "title": "Add Resistor",
+    "cmd": "add_component",
+    "type": "Component",
+    "content": {
+        "name": "Resistor",
+        "img": "resistor.svg",
+        "script": "resistor.js",
+        "terminals": [{
+            "x": 0,
+            "y": 32
+        }, {
+            "x": 64,
+            "y": 32
+        }],
+        "parameters": [{
+            "name": "Resistance",
+            "value": 1,
+            "unit": "k&Omega;"
+        }],
+        "showParameter": true
+    }
 }, {
-		"title": "Add Transistor",
-		"type": "Component"
+    "title": "Add Capacitor",
+    "cmd": "add_component",
+    "type": "Component",
+    "content": {
+        "name": "Capacitor",
+        "img": "capacitor.svg",
+        "script": "capacitor.js",
+        "terminals": [{
+            "x": 0,
+            "y": 32
+        }, {
+            "x": 64,
+            "y": 32
+        }],
+        "parameters": [{
+            "name": "Capacitance",
+            "value": "1",
+            "unit": "&mu;F"
+        }],
+        "showParameter": true
+    }
 }, {
-		"title": "Add Inductor",
-		"type": "Component"
+    "title": "Add Voltage Source",
+    "cmd": "add_component",
+    "type": "Component",
+    "content": {
+        "name": "Voltage Source",
+        "img": "voltage.svg",
+        "script": "voltage.js",
+        "terminals": [{
+            "x": 0,
+            "y": 32
+        }, {
+            "x": 64,
+            "y": 32
+        }],
+        "parameters": [{
+            "name": "Voltage",
+            "value": "5",
+            "unit": "V"
+        }],
+        "showParameter": true
+    }
 }, {
-		"title": "Add NAND Gate",
-		"type": "Component"
+    "title": "Add Transistor",
+    "type": "Component"
 }, {
-		"title": "Add OR Gate",
-		"type": "Component"
+    "title": "Add Inductor",
+    "type": "Component"
 }, {
-		"title": "Add Flip flop",
-		"type": "Component"
+    "title": "Add NAND Gate",
+    "type": "Component"
+}, {
+    "title": "Add OR Gate",
+    "type": "Component"
+}, {
+    "title": "Add Flip flop",
+    "type": "Component"
 }]

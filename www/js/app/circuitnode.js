@@ -1,3 +1,4 @@
+/*global define, $*/
 define(["thirdparty/jquery"], function ($) {
 
     function Circuitnode () {

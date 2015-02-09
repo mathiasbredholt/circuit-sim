@@ -1,41 +1,51 @@
 /*globals define, $*/
 define(function (require, exports, module) {
-	"use strict";
+    'use strict';
 
-	require("thirdparty/jquery");
+    require('thirdparty/jquery');
 
-	var CommandPanel = require("ui/CommandPanel"),
-		Wire = require("ui/Wire"),
-		Marquee = require("ui/Marquee"),
-		Inspector = require("ui/Inspector");
+    var CommandPanel = require('ui/CommandPanel'),
+        Wire = require('ui/Wire'),
+        Marquee = require('ui/Marquee'),
+        Inspector = require('ui/Inspector'),
+        Component = require('ui/Component');
 
-	var tabIndex = 0,
-		hasFocus = null;
+    var tabIndex = 0,
+        hasFocus = null;
 
-	var container = {
-		setFocus: function (obj) {
-			Inspector.update(obj);
-		},
-		getTabIndex: function () {
-			return tabIndex++;
-		}
-	}
+    var container = {
+        setFocus: function (obj) {
+            Inspector.update(obj);
+        },
+        getTabIndex: function () {
+            return ++tabIndex;
+        }
+    };
 
-	function init() {
+    function init() {
 
-		CommandPanel.init(container);
-		Wire.init();
-		Marquee.init();
-		Inspector.init();
+        CommandPanel.init(container);
+        Wire.init();
+        Marquee.init();
+        Inspector.init();
 
-		//Hotkeys:
-		$(document).keydown(function (event) {
-			if ((event.metaKey || event.ctrlKey) && event.which === 73) {
-				Inspector.toggle();
-			}
-		});
-	}
+        //Hotkeys:
+        $(document).keydown(function (event) {
+            if ((event.metaKey || event.ctrlKey) && event.which === 73) {
+                Inspector.toggle();
+            }
+        });
+    }
 
-	exports.init = init;
-	exports.container = container;
+    function addComponent(content) {
+        var component = new Component(content, container);
+
+        component.addEventListener('terminal', function (event) {
+            Wire.drawWire(event.message);
+        });
+    }
+
+    exports.init = init;
+    exports.container = container;
+    exports.addComponent = addComponent;
 });
