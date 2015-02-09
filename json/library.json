@@ -18,8 +18,8 @@
 			"script": "resistor.js",
 			"parameters": [{
 				"name": "Resistance",
-				"value": 1000,
-				"unit": "&Omega;"
+				"value": 1,
+				"unit": "k&Omega;"
 			}]
 		}
 }, {

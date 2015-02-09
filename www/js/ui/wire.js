@@ -1,17 +1,30 @@
+/*globals define, Snap, $*/
 define(function (require, exports, module) {
 	"use strict";
 
 	require("thirdparty/jquery");
 	require("thirdparty/snap.svg");
+<<<<<<< Updated upstream
 	var Circuitnode = require("app/circuitnode");
+=======
+>>>>>>> Stashed changes
 
 	var dragging,
 		wireStart,
 		wireEnd,
 		wire,
+<<<<<<< Updated upstream
 		nodes = new Array(),
 		cn = new Circuitnode(),
 		x1, y1, x2, y2, dx, dy;
+=======
+		x1,
+		y1,
+		x2,
+		y2,
+		dx,
+		dy;
+>>>>>>> Stashed changes
 
 	return {
 
@@ -63,8 +76,8 @@ define(function (require, exports, module) {
 					if (dragging) {
 						x2 = Math.round(e.clientX / 8) * 8;
 						y2 = Math.round(e.clientY / 8) * 8;
-						dx = x1 - x2,
-							dy = y1 - y2;
+						dx = x1 - x2;
+						dy = y1 - y2;
 
 						if (!e.altKey) {
 							if (Math.abs(dx) > Math.abs(dy)) {
@@ -84,5 +97,5 @@ define(function (require, exports, module) {
 					}
 				});
 		}
-	}
-})
+	};
+});

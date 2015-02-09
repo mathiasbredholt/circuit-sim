@@ -14,8 +14,8 @@
 	left: -320px;
 	right: 0;
 	top: 32px;
-	border: 2px solid #DDD;
-	border-radius: 4px;
+/*	border: 2px solid #DDD;*/
+/*	border-radius: 4px;*/
 	-webkit-transition: -webkit-transform 0.1s, opacity 0.2s;
 }
 

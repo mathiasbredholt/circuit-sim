@@ -9,8 +9,21 @@ define(function (require, exports, module) {
 		Marquee = require("ui/Marquee"),
 		Inspector = require("ui/Inspector");
 
+	var tabIndex = 0,
+		hasFocus = null;
+
+	var container = {
+		setFocus: function (obj) {
+			Inspector.update(obj);
+		},
+		getTabIndex: function () {
+			return tabIndex++;
+		}
+	}
+
 	function init() {
-		CommandPanel.init();
+
+		CommandPanel.init(container);
 		Wire.init();
 		Marquee.init();
 		Inspector.init();
@@ -20,12 +33,9 @@ define(function (require, exports, module) {
 			if ((event.metaKey || event.ctrlKey) && event.which === 73) {
 				Inspector.toggle();
 			}
-
-			if (event.which === 32) {
-				CommandPanel.show();
-			}
 		});
 	}
 
 	exports.init = init;
+	exports.container = container;
 });

@@ -1,18 +1,20 @@
 /*jslint plusplus: true */
-/*global define*/
+/*global define, $*/
 define(function (require, exports, module) {
 	"use strict";
-	
+
 	require("thirdparty/jquery");
 
 	var Command = require("app/command"),
-		  Server  = require("server/server");
+		Server = require("server/server");
 
-	var selectedIndex = 0,
+	var hasFocus = false,
+		selectedIndex = 0,
 		numberOfItems = 0,
 		result,
 		display = false,
-		elem;
+		elem,
+		ui;
 
 	function selectItem(index) {
 		$("#searchResult li").removeClass("hover");
@@ -20,6 +22,7 @@ define(function (require, exports, module) {
 	}
 
 	function selectNextItem() {
+		var selected = $("#searchResult").find(".hover");
 		if (selectedIndex < numberOfItems - 1) {
 			selectedIndex++;
 		} else {
@@ -29,6 +32,7 @@ define(function (require, exports, module) {
 	}
 
 	function selectPrevItem() {
+		var selected = $("#searchResult").find(".hover");
 		if (selectedIndex > 0) {
 			selectedIndex--;
 		} else {
@@ -87,12 +91,15 @@ define(function (require, exports, module) {
 		$("#commandpanel").toggleClass("slide");
 	}
 
-	function init() {
+	function init(container) {
 		var lastInput = "";
+
+
 		Server.on("searchResult", function (data) {
 			result = data;
 			updateList();
 		});
+
 		$("#commandInput").keyup(function (e) {
 			var input = $(this).val();
 			if (input !== lastInput) {
@@ -101,26 +108,37 @@ define(function (require, exports, module) {
 				Server.send("search", input);
 			}
 		});
-		$(document).keydown(function (e) {
-			var selected = $("#searchResult").find(".hover");
 
-			if (e.which === 38) {
-				e.preventDefault();
-				selectPrevItem();
+		$("#commandInput")
+			.focus(function () {
+				hasFocus = true;
+			})
+			.blur(function () {
+				hasFocus = false;
+			});
+
+		$(document).keydown(function (event) {
+			if (event.which === 32) {
+				show();
 			}
 
-			if (e.which === 40) {
-				e.preventDefault();
-				selectNextItem();
-			}
+			if (hasFocus) {
+				if (event.which === 38) {
+					event.preventDefault();
+					selectPrevItem();
+				}
 
-			if (e.which === 13) {
-				e.preventDefault();
-				select();
+				if (event.which === 40) {
+					event.preventDefault();
+					selectNextItem();
+				}
+
+				if (event.which === 13) {
+					select();
+				}
 			}
 		});
 	}
 
 	exports.init = init;
-	exports.show = show;
 });

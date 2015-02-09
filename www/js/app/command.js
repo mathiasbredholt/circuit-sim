@@ -5,7 +5,8 @@ define(function (require, exports, module) {
 
 	require("thirdparty/jquery");
 
-	var Component = require("ui/Component");
+	var UI = require("ui/UI"),
+		Component = require("ui/Component");
 
 	function run(cmd) {
 		switch (cmd.cmd) {
@@ -13,7 +14,7 @@ define(function (require, exports, module) {
 			$("#grid").toggle();
 			break;
 		case "add_component":
-			var component = new Component(cmd.content);
+			var component = new Component(cmd.content, UI.container);
 			break;
 		}
 	}

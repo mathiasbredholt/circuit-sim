@@ -24,3 +24,7 @@ input {
 	height: 16px;
 	display: block;
 }
+
+div:focus {
+	outline: 2px dashed #444;
+}
