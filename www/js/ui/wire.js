@@ -1,3 +1,4 @@
+ 
 define(function (require, exports, module) {
     'use strict';
 
@@ -17,8 +18,8 @@ define(function (require, exports, module) {
     var s = Snap('#wiring');
 
     function init() {
-        $('#wiring')
-            .click(function (e) {
+        $("#content")
+            .click(function (event) {
                 if (dragging) {
                     x1 = x2;
                     y1 = y2;
@@ -35,14 +36,13 @@ define(function (require, exports, module) {
                     //          wireEnd = s.circle(x1, y1, 4);
                 }
             })
-            .mousemove(function (e) {
+            .mousemove(function (event) {
                 if (dragging) {
-                    x2 = Math.round(e.clientX / 8) * 8;
-                    y2 = Math.round(e.clientY / 8) * 8;
+                    x2 = Math.round(event.clientX / 8) * 8;
+                    y2 = Math.round(event.clientY / 8) * 8;
                     dx = x1 - x2;
                     dy = y1 - y2;
-
-                    if (!e.altKey) {
+                    if (!event.altKey) {
                         if (Math.abs(dx) > Math.abs(dy)) {
                             y2 = y1;
                             dy = 0;
@@ -51,6 +51,7 @@ define(function (require, exports, module) {
                             dx = 0;
                         }
                     }
+
 
                     wire.attr({
                         'x2': x2,
@@ -63,6 +64,7 @@ define(function (require, exports, module) {
 
     function drawWire(position) {
         dragging = !dragging;
+
         x1 = Math.round(position.x / 8) * 8;
         y1 = Math.round(position.y / 8) * 8;
 

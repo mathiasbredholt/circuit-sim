@@ -10,7 +10,7 @@ define(function (require, exports, module) {
         Inspector = require('ui/Inspector'),
         Component = require('ui/Component');
 
-    var tabIndex = 0,
+    var tabIndex = 10,
         hasFocus = null;
 
     var container = {

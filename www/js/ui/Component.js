@@ -39,7 +39,7 @@ define(function (require, exports, module) {
 
             // Creates component div and appends the svg
 
-            $("#content").append(
+            $("#circuit").append(
                 self.element = $("<div>")
                 .addClass("component")
                 .offset({
@@ -49,26 +49,30 @@ define(function (require, exports, module) {
                 .append(svg)
             );
 
+            svg.find('.terminal').click(terminalClickHandler);
+            svg.find('.terminalPoint').click(terminalClickHandler);
+
             // Create terminals
 
-            for (var i = 0; i < content.terminals.length; i++) {
-                self.element.append(
-                    $("<div>")
-                    .addClass('terminal')
-                    .css({
-                        "left": content.terminals[i].x - 4,
-                        "top": content.terminals[i].y - 4
-                    })
-                    .click(terminalClickHandler)
-                );
-            }
+            // for (var i = 0; i < content.terminals.length; i++) {
+            //     self.element.append(
+            //         $("<div>")
+            //         .addClass('terminal')
+            //         .css({
+            //             "left": content.terminals[i].x - 4,
+            //             "top": content.terminals[i].y - 4
+            //         })
+            //         .click(terminalClickHandler)
+            //     );
+            // }
 
             function terminalClickHandler(event) {
+                event.stopPropagation();
                 self.dispatchEvent({
                     type: 'terminal',
                     message: {
-                        x: $(this).offset().left,
-                        y: $(this).offset().top
+                        x: $(this).offset().left + $(this).attr('r'),
+                        y: $(this).offset().top + $(this).attr('r')
                     }
                 });
             }
@@ -87,8 +91,8 @@ define(function (require, exports, module) {
 
         loadImageFromServer(content.img, function (img) {
 
-
             draw(img);
+
 
             self.element.attr("tabindex", container.getTabIndex());
 
@@ -100,13 +104,13 @@ define(function (require, exports, module) {
                 elem = self.element;
 
             elem.mousedown(function (e) {
-                dragging = true;
+                    dragging = true;
 
-                origin.left = e.clientX - elem.offset().left;
-                origin.top = e.clientY - elem.offset().top;
+                    origin.left = e.clientX - elem.offset().left;
+                    origin.top = e.clientY - elem.offset().top;
 
-                //              container.setFocus(focusHandler);
-            })
+                    //              container.setFocus(focusHandler);
+                })
                 .focus(function () {
                     self.hasFocus = true;
                     container.setFocus(self);
