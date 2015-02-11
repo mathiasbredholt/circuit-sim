@@ -6,56 +6,58 @@ var fs = require('fs');
 var fuzzy = require('fuzzy');
 
 var library, options = {
-  pre: '',
-  post: '',
-  extract: function(elem) { 
-    return elem.title; 
-  }
+    pre: '',
+    post: '',
+    extract: function (elem) {
+        return elem.title;
+    }
 }
 
 LoadLibrary();
 
-app.get("/", function(req, res) {
-  res.sendFile(__dirname + "/www/index.html");
+app.get("/", function (req, res) {
+    res.sendFile(__dirname + "/www/index.html");
 });
 
 app.use("/js", express.static(__dirname + "/www/js"));
 app.use("/css", express.static(__dirname + "/www/css"));
 
-io.on('connection', function(socket){
-  console.log("a user is connected.");
+io.on('connection', function (socket) {
+    console.log("a user is connected.");
 
-  socket.on('search', function(msg) {
-    SearchLibrary(msg, function(data) {
-      io.emit('searchResult', data);
+    socket.on('search', function (msg) {
+        SearchLibrary(msg, function (data) {
+            io.emit('searchResult', data);
+        });
     });
-  });
-  
-  socket.on('getImg', function(path) {
-    LoadImage(path, function(data) {
-      io.emit('rcvImg', data);
-    });
-  })
+
+    socket.on('getImg', function (path) {
+        LoadImage(path, function (data) {
+            io.emit('rcvImg', data);
+        });
+    })
 });
 
-http.listen(3000, function(){
-  console.log('listening on *:3000');
+http.listen(3000, function () {
+    console.log('listening on *:3000');
 });
 
 function LoadLibrary(callback) {
-  fs.readFile('json/library.json', 'utf8', function(err, data) {
-    library = JSON.parse(data);
-  })
+    fs.readFile('json/library.json', 'utf8', function (err, data) {
+        library = JSON.parse(data);
+    })
 }
 
 function SearchLibrary(input, callback) {
-  var results = fuzzy.filter(input, library, options);
-  var matches = results.map(function(elem) { return elem.original });
-  callback(matches);
+    var results = fuzzy.filter(input, library, options);
+    var matches = results.map(function (elem) {
+        return elem.original
+    });
+    callback(matches);
 }
 
 function LoadImage(path, callback) {
-  fs.readFile('graphics/'+path, 'utf8', function(err, data) {
-    callback(data);
-  });
+    fs.readFile('graphics/' + path, 'utf8', function (err, data) {
+        callback(data);
+    });
 }
