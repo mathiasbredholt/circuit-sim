@@ -25,7 +25,7 @@ define(function (require, exports, module) {
     function init() {
 
         CommandPanel.init(container);
-        Wire.init();
+        Wire.init(container);
         Marquee.init();
         Inspector.init();
 
@@ -41,7 +41,7 @@ define(function (require, exports, module) {
         var component = new Component(content, container);
 
         component.addEventListener('terminal', function (event) {
-            Wire.drawWire(event.message);
+            Wire.selectedTerminal(event.message);
         });
     }
 

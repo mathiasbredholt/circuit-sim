@@ -34,6 +34,7 @@
 }
 .component {
     position: absolute;
+    pointer-events: none;
     -webkit-transform: rotate(0);
 }
 .componentHover {
@@ -45,7 +46,7 @@
     margin: 8px;
 }
 .inspectorBottomLine {
-    /*	background: #DDD;*/
+    /*  background: #DDD;*/
     
     width: calc(100% - 16px);
     position: absolute;
@@ -93,12 +94,25 @@
 .componentLabel {
     font-size: 13px;
     text-align: center;
-    width: 64px;
-    margin-top: -13px;
+    margin-top: 4px;
 }
-.terminalPoint:hover {
+.terminal {
+    opacity: 0;
+    pointer-events: all;
+}
+.terminal:hover {
     opacity: 1;
 }
-.terminal:hover + .terminalPoint {
-    opacity: 1;
+.graphics {
+    pointer-events: none;
+}
+.wire {
+    pointer-events: all;
+    border: 4px solid #000;
+}
+.wire:focus {
+    outline: 2px solid #999;
+}
+.bbox {
+    pointer-events: all;
 }

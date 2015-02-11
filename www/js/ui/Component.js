@@ -2,7 +2,7 @@ define(function (require, exports, module) {
     "use strict";
 
     require("thirdparty/jquery");
-    require("thirdparty/snap.svg");
+    require("thirdparty/svg");
     require("thirdparty/EventDispatcher");
 
 
@@ -33,46 +33,38 @@ define(function (require, exports, module) {
 
         function draw(img) {
 
-            var param, svg;
+            var param, svg, svgjs, bbox;
 
             svg = $(img);
 
             // Creates component div and appends the svg
 
-            $("#circuit").append(
+            $("#circuit").prepend(
                 self.element = $("<div>")
                 .addClass("component")
                 .offset({
                     top: 256,
                     left: 256
                 })
-                .append(svg)
+                .append(svg = svg)
             );
 
+            svgjs = SVG(svg[0]);
+            bbox = svgjs.bbox();
+            svgjs.viewbox(bbox);
+            svgjs.size(bbox.width, bbox.height);
+
             svg.find('.terminal').click(terminalClickHandler);
-            svg.find('.terminalPoint').click(terminalClickHandler);
-
-            // Create terminals
-
-            // for (var i = 0; i < content.terminals.length; i++) {
-            //     self.element.append(
-            //         $("<div>")
-            //         .addClass('terminal')
-            //         .css({
-            //             "left": content.terminals[i].x - 4,
-            //             "top": content.terminals[i].y - 4
-            //         })
-            //         .click(terminalClickHandler)
-            //     );
-            // }
+            // svg.find('.terminalPoint').click(terminalClickHandler);
 
             function terminalClickHandler(event) {
                 event.stopPropagation();
+                var r = parseInt($(this).attr('r'));
                 self.dispatchEvent({
                     type: 'terminal',
                     message: {
-                        x: $(this).offset().left + $(this).attr('r'),
-                        y: $(this).offset().top + $(this).attr('r')
+                        x: $(this).offset().left + r,
+                        y: $(this).offset().top + r
                     }
                 });
             }
@@ -92,7 +84,6 @@ define(function (require, exports, module) {
         loadImageFromServer(content.img, function (img) {
 
             draw(img);
-
 
             self.element.attr("tabindex", container.getTabIndex());
 
@@ -131,6 +122,14 @@ define(function (require, exports, module) {
                         });
                     }
                 });
+
+
+            elem.bind('drag', function (event) {
+                $(this).css({
+                    top: Math.round(event.offsetY / 20) * 20,
+                    left: Math.round(event.offsetX / 20) * 20
+                });
+            });
 
             self.element.keydown(function (event) {
                 if (event.which === 8) {
