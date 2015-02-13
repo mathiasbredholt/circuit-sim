@@ -3,14 +3,12 @@ define(function (require, exports, module) {
 
     require("thirdparty/jquery");
     require("thirdparty/svg");
-    require("thirdparty/EventDispatcher");
+    require("thirdparty/svg.parser");
+    require("thirdparty/svg.import");
 
 
-    var Server = require("server/server");
-
-    function drawComponent(content, img) {
-
-    }
+    var Server = require("server/server"),
+        Terminal = require("ui/Terminal");
 
     function loadImageFromServer(url, onImageReceived) {
         Server.send("getImg", url);
@@ -38,7 +36,6 @@ define(function (require, exports, module) {
             svg = $(img);
 
             // Creates component div and appends the svg
-
             $("#circuit").prepend(
                 self.element = $("<div>")
                 .addClass("component")
@@ -54,20 +51,58 @@ define(function (require, exports, module) {
             svgjs.viewbox(bbox);
             svgjs.size(bbox.width, bbox.height);
 
-            svg.find('.terminal').click(terminalClickHandler);
-            // svg.find('.terminalPoint').click(terminalClickHandler);
 
-            function terminalClickHandler(event) {
-                event.stopPropagation();
-                var r = parseInt($(this).attr('r'));
-                self.dispatchEvent({
-                    type: 'terminal',
-                    message: {
-                        x: $(this).offset().left + r,
-                        y: $(this).offset().top + r
-                    }
-                });
-            }
+            // Create terminals on reference points
+
+            svg.find('.ref').each(function () {
+                var position = {
+                    x: $(this).position().left,
+                    y: $(this).position().top
+                };
+
+                Terminal.create(position, self.element, false);
+            });
+
+            // svg.find('.terminal')
+            //     .click(terminalClickHandler)
+            //     .mouseover(function () {
+
+            //         $(this).css('opacity', '1');
+
+            //         var r = parseInt($(this).attr('rx'));
+
+            //         self.dispatchEvent({
+            //             type: 'snap',
+            //             message: {
+            //                 x: $(this).offset().left + r,
+            //                 y: $(this).offset().top + r
+            //             }
+            //         });
+
+            //     })
+            //     .mouseout(function (event) {
+
+            //         $(this).css('opacity', '0');
+
+
+            //         self.dispatchEvent({
+            //             type: 'snapOut',
+            //             message: {}
+            //         });
+
+            //     });
+
+            // function terminalClickHandler(event) {
+            //     event.stopPropagation();
+            //     var r = parseInt($(this).attr('rx'));
+            //     self.dispatchEvent({
+            //         type: 'terminal',
+            //         message: {
+            //             x: $(this).offset().left + r,
+            //             y: $(this).offset().top + r
+            //         }
+            //     });
+            // }
 
             // If showParameter is true, append the component value to the page.
 
@@ -85,7 +120,7 @@ define(function (require, exports, module) {
 
             draw(img);
 
-            self.element.attr("tabindex", container.getTabIndex());
+            self.element.children('svg').attr("tabindex", container.getTabIndex());
 
             var dragging,
                 origin = {
@@ -154,8 +189,8 @@ define(function (require, exports, module) {
 
             if (self.angle === 90 || self.angle === 270) {
                 self.element.children('div').css({
-                    "margin-left": '32px',
-                    "-webkit-transform": 'translate3d(0, -22px, 0)'
+                    "margin-left": '64px',
+                    "-webkit-transform": 'translate3d(0, -' + self.element.children('svg').width() / 2 + 'px, 0)'
                 });
             } else {
                 self.element.children('div').css({
@@ -169,8 +204,6 @@ define(function (require, exports, module) {
             self.element.remove();
         };
     }
-
-    EventDispatcher.prototype.apply(Component.prototype);
 
     return Component;
 });

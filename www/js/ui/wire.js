@@ -5,10 +5,12 @@ define(function (require, exports, module) {
     require('thirdparty/jquery');
     require('thirdparty/svg');
 
-    var Circuitnode = require('app/circuitnode');
+    var Circuitnode = require('app/circuitnode'),
+        Terminal = require('ui/Terminal');
 
     var container,
         drawing,
+        snap = false,
         drawMode = false,
         wireEnd,
         wire, displayWire,
@@ -21,25 +23,48 @@ define(function (require, exports, module) {
     function Wire(wire, displayWire) {
         var self = this;
 
+        self.coordinates = {
+            x1: x1,
+            y1: y2,
+            x2: x2,
+            y2: y2
+        };
+
         wire
             .click(selectedWire)
             .keydown(function (event) {
                 if (event.which === 8) {
                     event.preventDefault();
+                    // removeWire();
                     wire.remove();
                     displayWire.remove();
+
                 }
             });
+
+        wire.mouseover(function (event) {
+            if (drawMode) {
+                svg.circle(8).cx(self.coordinates.x1).cy(self.coordinates.y1);
+            }
+        });
     }
 
     function init(parent) {
         container = parent;
+
         $("#content")
             .click(function () {
                 addWire();
                 nextWire();
             })
-            .mousemove(update)
+            .mousemove(function (event) {
+                if (!snap && drawing) {
+                    x2 = Math.round(event.clientX / 8) * 8;
+                    y2 = Math.round(event.clientY / 8) * 8;
+
+                    update();
+                }
+            })
             .keydown(function (event) {
                 if (event.shiftKey) {
                     drawMode = true;
@@ -57,8 +82,9 @@ define(function (require, exports, module) {
             .attr({
                 stroke: '#000',
                 "stroke-width": 2,
-                "stroke-linecap": 'round'
+                "stroke-linecap": 'square'
             });
+
         $(displayWire.node).addClass('graphics');
     }
 
@@ -105,13 +131,10 @@ define(function (require, exports, module) {
 
         if (drawing) {
 
-            x2 = Math.round(event.clientX / 8) * 8;
-            y2 = Math.round(event.clientY / 8) * 8;
-
             dx = x1 - x2;
             dy = y1 - y2;
 
-            if (!event.altKey) {
+            if (!event.altKey && !snap) {
                 if (Math.abs(dx) > Math.abs(dy)) {
                     y2 = y1;
                     dy = 0;
@@ -128,16 +151,39 @@ define(function (require, exports, module) {
     }
 
     function startWire(position) {
-        drawing = true;
+            $("#content").css('cursor', 'crosshair');
 
-        x1 = Math.round(position.x / 8) * 8;
-        y1 = Math.round(position.y / 8) * 8;
+            x1 = Math.round(position.x / 8) * 8;
+            y1 = Math.round(position.y / 8) * 8;
 
-        cn.addPoint(x1, y1);
+            cn.addPoint(x1, y1);
 
-        drawWire();
+            drawWire();
 
-        wireEnd = svg.circle(8).cx(x1).cy(y1);
+            wireEnd = svg.circle(8).cx(x1).cy(y1);
+
+
+            drawing = true;
+            Terminal.snapMode(drawing);
+        }
+        // Ends wire, position is given with position.x and position.y
+
+    function endWire(position, isNode) {
+        addWire();
+
+        drawing = false;
+
+        Terminal.snapMode(drawing);
+
+        $("#content").css('cursor', 'auto');
+
+        wireEnd.remove();
+
+        if (isNode) {
+
+            Terminal.create(position, $("#circuit"), true);
+
+        }
     }
 
     function selectedTerminal(position) {
@@ -147,7 +193,8 @@ define(function (require, exports, module) {
 
         } else {
 
-            endWire({}, false);
+            snap = false;
+            endWire(position, false);
 
         }
     }
@@ -164,21 +211,38 @@ define(function (require, exports, module) {
         }
     }
 
-    // Ends wire, position is given with position.x and position.y
 
-    function endWire(position, isNode) {
-        addWire();
+    function removeWire() {
 
-        drawing = false;
+        // wire.remove();
+        // displayWire.remove();
 
-        if (!isNode) {
+    }
 
-            $(wireEnd.node).remove();
+    function snapToTerminal(position) {
 
+        if (drawing) {
+            snap = true;
+
+            x2 = position.x;
+            y2 = position.y;
+
+            update();
+        }
+
+
+    }
+
+    function snapOut() {
+        if (drawing) {
+            snap = false;
         }
     }
 
-    exports.nodes = nodes;
+
     exports.init = init;
+    exports.nodes = nodes;
     exports.selectedTerminal = selectedTerminal;
+    exports.snapToTerminal = snapToTerminal;
+    exports.snapOut = snapOut;
 });

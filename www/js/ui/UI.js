@@ -40,9 +40,18 @@ define(function (require, exports, module) {
     function addComponent(content) {
         var component = new Component(content, container);
 
-        component.addEventListener('terminal', function (event) {
-            Wire.selectedTerminal(event.message);
-        });
+        // component.addEventListener('terminal', function (event) {
+        //     Wire.selectedTerminal(event.message);
+        // });
+
+        // component.addEventListener('snap', function (event) {
+        //     Wire.snapToTerminal(event.message);
+        // });
+
+        // component.addEventListener('snapOut', function (event) {
+        //     Wire.snapOut();
+        // });
+
     }
 
     exports.init = init;

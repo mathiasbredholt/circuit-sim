@@ -25,13 +25,6 @@
     border: 4px solid #000;
     border-radius: 4px;
 }
-.wire {
-    position: absolute;
-    background: #000;
-    height: 4px;
-    width: 4px;
-    cursor: crosshair;
-}
 .component {
     position: absolute;
     pointer-events: none;
@@ -97,11 +90,17 @@
     margin-top: 4px;
 }
 .terminal {
-    opacity: 0;
+    position: absolute;
     pointer-events: all;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
 }
-.terminal:hover {
-    opacity: 1;
+.terminalPoint {
+    fill: #000;
+    stroke: #000;
+    stroke-width: 4;
+    stroke-opacity: 0;
 }
 .graphics {
     pointer-events: none;

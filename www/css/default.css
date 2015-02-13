@@ -22,6 +22,6 @@ input {
     height: 16px;
     display: block;
 }
-div:focus {
+svg:focus {
     outline: 1px dashed #999;
 }
