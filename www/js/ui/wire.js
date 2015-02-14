@@ -83,9 +83,8 @@ define(function (require, exports, module) {
                 stroke: '#000',
                 "stroke-width": 2,
                 "stroke-linecap": 'square'
-            });
-
-        $(displayWire.node).addClass('graphics');
+            })
+            .addClass('graphics');
     }
 
     function addWire() {
@@ -160,7 +159,7 @@ define(function (require, exports, module) {
 
             drawWire();
 
-            wireEnd = svg.circle(8).cx(x1).cy(y1);
+            wireEnd = svg.circle(8).cx(x1).cy(y1).addClass('graphics');
 
 
             drawing = true;
@@ -201,11 +200,12 @@ define(function (require, exports, module) {
 
     function selectedWire(event) {
         if (drawing) {
+
             $(this).blur();
 
             endWire({
-                x: Math.round(event.clientX / 8) * 8,
-                y: Math.round(event.clientY / 8) * 8
+                x: x2,
+                y: y2
             }, true);
 
         }

@@ -55,7 +55,6 @@ define(function (require, exports, module) {
     }
 
     function snapMode(value) {
-        console.log(value);
         if (value) {
             $(".terminalPoint").css('stroke-width', 16);
         } else {

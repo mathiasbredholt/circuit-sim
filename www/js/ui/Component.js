@@ -3,9 +3,6 @@ define(function (require, exports, module) {
 
     require("thirdparty/jquery");
     require("thirdparty/svg");
-    require("thirdparty/svg.parser");
-    require("thirdparty/svg.import");
-
 
     var Server = require("server/server"),
         Terminal = require("ui/Terminal");
@@ -43,11 +40,18 @@ define(function (require, exports, module) {
                     top: 256,
                     left: 256
                 })
-                .append(svg = svg)
             );
 
+            self.element.append($('<div>').css('display', 'inline-block').append(svg = svg));
+
             svgjs = SVG(svg[0]);
-            bbox = svgjs.bbox();
+            bbox = {
+                x: svgjs.bbox().x - 8,
+                y: svgjs.bbox().y - 8,
+                width: svgjs.bbox().width + 16,
+                height: svgjs.bbox().height + 16
+            };
+
             svgjs.viewbox(bbox);
             svgjs.size(bbox.width, bbox.height);
 
@@ -60,7 +64,7 @@ define(function (require, exports, module) {
                     y: $(this).position().top
                 };
 
-                Terminal.create(position, self.element, false);
+                Terminal.create(position, self.element.children('div'), false);
             });
 
             // svg.find('.terminal')
@@ -120,7 +124,7 @@ define(function (require, exports, module) {
 
             draw(img);
 
-            self.element.children('svg').attr("tabindex", container.getTabIndex());
+            self.element.children('div').attr("tabindex", container.getTabIndex());
 
             var dragging,
                 origin = {
@@ -181,19 +185,19 @@ define(function (require, exports, module) {
 
         self.rotate = function () {
             self.angle += 45;
-            self.element.children('svg').css('-webkit-transform', 'rotate(' + self.angle + 'deg)');
+            self.element.children('div').css('-webkit-transform', 'rotate(' + self.angle + 'deg)');
 
             if (self.angle > 315) {
                 self.angle = 0;
             }
 
             if (self.angle === 90 || self.angle === 270) {
-                self.element.children('div').css({
+                self.element.children('.componentLabel').css({
                     "margin-left": '64px',
                     "-webkit-transform": 'translate3d(0, -' + self.element.children('svg').width() / 2 + 'px, 0)'
                 });
             } else {
-                self.element.children('div').css({
+                self.element.children('.componentLabel').css({
                     "margin-left": '0px',
                     "-webkit-transform": 'translate3d(0, 0, 0)'
                 });

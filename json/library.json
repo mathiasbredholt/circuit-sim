@@ -13,13 +13,6 @@
         "name": "Resistor",
         "img": "resistor.svg",
         "script": "resistor.js",
-        "terminals": [{
-            "x": 0,
-            "y": 32
-        }, {
-            "x": 64,
-            "y": 32
-        }],
         "parameters": [{
             "name": "Resistance",
             "value": 1,
@@ -35,13 +28,6 @@
         "name": "Capacitor",
         "img": "capacitor.svg",
         "script": "capacitor.js",
-        "terminals": [{
-            "x": 0,
-            "y": 32
-        }, {
-            "x": 64,
-            "y": 32
-        }],
         "parameters": [{
             "name": "Capacitance",
             "value": "1",
@@ -57,19 +43,23 @@
         "name": "Voltage Source",
         "img": "voltage.svg",
         "script": "voltage.js",
-        "terminals": [{
-            "x": 0,
-            "y": 32
-        }, {
-            "x": 64,
-            "y": 32
-        }],
         "parameters": [{
             "name": "Voltage",
             "value": "5",
             "unit": "V"
         }],
         "showParameter": true
+    }
+}, {
+    "title": "Add Schmidtt Trigger",
+    "cmd": "add_component",
+    "type": "Component",
+    "content": {
+        "name": "Schmidtt Trigger",
+        "img": "schmidtt.svg",
+        "script": "schmitt.js",
+        "parameters": [],
+        "showParameter": false
     }
 }, {
     "title": "Add Transistor",
