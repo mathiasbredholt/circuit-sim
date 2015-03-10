@@ -13,9 +13,9 @@ define(["thirdparty/jquery"], function ($) {
                 p.push([x, y]);
             }
         };
-        this.mergeNode = function (points) {
-            for (var i = 0; i < points.length; i++) {
-                p.push(points[i]);
+        this.mergeNode = function (node) {
+            for (var i = 0; i < node.points.length; i++) {
+                p.push(node.points[i]);
             }
         };
     }

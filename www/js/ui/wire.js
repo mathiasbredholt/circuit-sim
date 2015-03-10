@@ -7,6 +7,7 @@ define(function(require, exports, module) {
     require('thirdparty/svg');
 
     var Circuitnode = require('app/circuitnode'),
+        Simulation = require('app/simulation'),
         Terminal = require('ui/Terminal');
 
     var container,
@@ -192,6 +193,11 @@ define(function(require, exports, module) {
             Terminal.create(position, $("#circuit"), true);
 
         }
+
+        cn.addPoint(Math.round(position.x / 8) * 8, Math.round(position.y / 8) * 8);
+        nodes.push(cn); //When the wire is complete, add the current node to the list of nodes
+        nodes = Simulation.minimizeNodes(nodes);
+        cn = new Circuitnode();
     }
 
     function selectedTerminal(position) {
