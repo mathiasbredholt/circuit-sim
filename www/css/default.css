@@ -10,7 +10,6 @@ div {
 }
 svg {
     display: block;
-    pointer-events: all;
 }
 input {
     margin: 8px;

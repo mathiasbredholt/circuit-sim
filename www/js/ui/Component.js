@@ -1,15 +1,15 @@
-define(function (require, exports, module) {
+define(function(require, exports, module) {
     "use strict";
 
     require("thirdparty/jquery");
-    require("thirdparty/svg");
+    require("thirdparty/jquery-ui");
 
     var Server = require("server/server"),
         Terminal = require("ui/Terminal");
 
-    function loadImageFromServer(url, onImageReceived) {
+    function getSVGString(url, onImageReceived) {
         Server.send("getImg", url);
-        Server.on("rcvImg", function (data) {
+        Server.on("rcvImg", function(data) {
             Server.remove("rcvImg");
             onImageReceived(data);
         });
@@ -23,6 +23,8 @@ define(function (require, exports, module) {
 
         self.name = content.name;
         self.parameters = content.parameters;
+
+        getSVGString(content.img, draw);
 
         // Draw component function
 
@@ -58,7 +60,7 @@ define(function (require, exports, module) {
 
             // Create terminals on reference points
 
-            svg.find('.ref').each(function () {
+            svg.find('.ref').each(function() {
                 var position = {
                     x: $(this).position().left,
                     y: $(this).position().top
@@ -66,47 +68,6 @@ define(function (require, exports, module) {
 
                 Terminal.create(position, self.element.children('div'), false);
             });
-
-            // svg.find('.terminal')
-            //     .click(terminalClickHandler)
-            //     .mouseover(function () {
-
-            //         $(this).css('opacity', '1');
-
-            //         var r = parseInt($(this).attr('rx'));
-
-            //         self.dispatchEvent({
-            //             type: 'snap',
-            //             message: {
-            //                 x: $(this).offset().left + r,
-            //                 y: $(this).offset().top + r
-            //             }
-            //         });
-
-            //     })
-            //     .mouseout(function (event) {
-
-            //         $(this).css('opacity', '0');
-
-
-            //         self.dispatchEvent({
-            //             type: 'snapOut',
-            //             message: {}
-            //         });
-
-            //     });
-
-            // function terminalClickHandler(event) {
-            //     event.stopPropagation();
-            //     var r = parseInt($(this).attr('rx'));
-            //     self.dispatchEvent({
-            //         type: 'terminal',
-            //         message: {
-            //             x: $(this).offset().left + r,
-            //             y: $(this).offset().top + r
-            //         }
-            //     });
-            // }
 
             // If showParameter is true, append the component value to the page.
 
@@ -118,12 +79,6 @@ define(function (require, exports, module) {
 
             }
 
-        }
-
-        loadImageFromServer(content.img, function (img) {
-
-            draw(img);
-
             self.element.children('div').attr("tabindex", container.getTabIndex());
 
             var dragging,
@@ -133,7 +88,7 @@ define(function (require, exports, module) {
                 },
                 elem = self.element;
 
-            elem.mousedown(function (e) {
+            elem.mousedown(function(e) {
                     dragging = true;
 
                     origin.left = e.clientX - elem.offset().left;
@@ -141,36 +96,42 @@ define(function (require, exports, module) {
 
                     //              container.setFocus(focusHandler);
                 })
-                .focus(function () {
+                .focus(function() {
                     self.hasFocus = true;
                     container.setFocus(self);
                 })
-                .blur(function () {
+                .blur(function() {
                     self.hasFocus = false;
                 });
 
-            $(document)
-                .mouseup(function () {
-                    dragging = false;
-                })
-                .mousemove(function (e) {
-                    if (dragging) {
-                        elem.offset({
-                            left: Math.round((e.clientX - origin.left) / 8) * 8,
-                            top: Math.round((e.clientY - origin.top) / 8) * 8
-                        });
-                    }
-                });
+            // $(document)
+            //     .mouseup(function() {
+            //         dragging = false;
+            //     })
+            //     .mousemove(function(e) {
+            //         if (dragging) {
+            //             elem.offset({
+            //                 left: Math.round((e.clientX - origin.left) / 8) * 8,
+            //                 top: Math.round((e.clientY - origin.top) / 8) * 8
+            //             });
+            //         }
+            //     });
 
-
-            elem.bind('drag', function (event) {
-                $(this).css({
-                    top: Math.round(event.offsetY / 20) * 20,
-                    left: Math.round(event.offsetX / 20) * 20
-                });
+            elem.draggable({
+                addClasses: false,
+                grid: [16, 16]
             });
 
-            self.element.keydown(function (event) {
+            elem.selectable();
+
+            // elem.bind('drag', function(event) {
+            //     $(this).css({
+            //         top: Math.round(event.offsetY / 20) * 20,
+            //         left: Math.round(event.offsetX / 20) * 20
+            //     });
+            // });
+
+            self.element.keydown(function(event) {
                 if (event.which === 8) {
                     event.preventDefault();
                     elem.blur();
@@ -181,9 +142,9 @@ define(function (require, exports, module) {
                     self.rotate();
                 }
             });
-        });
+        }
 
-        self.rotate = function () {
+        self.rotate = function() {
             self.angle += 45;
             self.element.children('div').css('-webkit-transform', 'rotate(' + self.angle + 'deg)');
 
@@ -204,10 +165,10 @@ define(function (require, exports, module) {
             }
         };
 
-        self.destroy = function () {
+        self.destroy = function() {
             self.element.remove();
         };
     }
 
-    return Component;
+    exports.Component = Component;
 });

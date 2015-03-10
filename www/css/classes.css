@@ -27,7 +27,6 @@
 }
 .component {
     position: absolute;
-    pointer-events: none;
     -webkit-transform: rotate(0);
 }
 .componentHover {
@@ -85,9 +84,11 @@
     float: right;
 }
 .componentLabel {
+    font-family: "Courier";
     font-size: 13px;
     text-align: center;
     margin-top: 4px;
+    font-weight: bold;
 }
 .terminal {
     position: absolute;
@@ -111,6 +112,12 @@
 .wire:focus {
     outline: 2px solid #999;
 }
+.ui-selected {
+    background: #DDD;
+}
 .bbox {
     pointer-events: all;
+}
+.wireElem {
+    position: absolute;
 }

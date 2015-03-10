@@ -1,8 +1,9 @@
  
-define(function (require, exports, module) {
+define(function(require, exports, module) {
     'use strict';
 
     require('thirdparty/jquery');
+    require('thirdparty/jquery-ui');
     require('thirdparty/svg');
 
     var Circuitnode = require('app/circuitnode'),
@@ -16,9 +17,10 @@ define(function (require, exports, module) {
         wire, displayWire,
         nodes = [],
         cn = new Circuitnode(),
-        x1, y1, x2, y2, dx, dy;
+        x1, y1, x2, y2, dx, dy,
+        currentPath, path;
 
-    var svg = SVG('wiring');
+    var svg = SVG("wiring");
 
     function Wire(wire, displayWire) {
         var self = this;
@@ -30,22 +32,29 @@ define(function (require, exports, module) {
             y2: y2
         };
 
-        wire
+        $(wire.node)
             .click(selectedWire)
-            .keydown(function (event) {
+            .keydown(function(event) {
                 if (event.which === 8) {
                     event.preventDefault();
                     // removeWire();
                     wire.remove();
-                    displayWire.remove();
-
                 }
             });
 
-        wire.mouseover(function (event) {
+        $(wire.node).mouseover(function(event) {
             if (drawMode) {
                 svg.circle(8).cx(self.coordinates.x1).cy(self.coordinates.y1);
             }
+        });
+
+        $(wire.node).draggable({
+            addClasses: false,
+            grid: [16, 16]
+        }).bind('drag', function(event, ui) {
+            // update coordinates manually, since top/left style props don't work on SVG
+            wire.move(ui.position.left, ui.position.top);
+            displayWire.move(ui.position.left, ui.position.top);
         });
     }
 
@@ -53,11 +62,10 @@ define(function (require, exports, module) {
         container = parent;
 
         $("#content")
-            .click(function () {
-                addWire();
+            .click(function() {
                 nextWire();
             })
-            .mousemove(function (event) {
+            .mousemove(function(event) {
                 if (!snap && drawing) {
                     x2 = Math.round(event.clientX / 8) * 8;
                     y2 = Math.round(event.clientY / 8) * 8;
@@ -65,12 +73,12 @@ define(function (require, exports, module) {
                     update();
                 }
             })
-            .keydown(function (event) {
+            .keydown(function(event) {
                 if (event.shiftKey) {
                     drawMode = true;
                 }
             })
-            .keyup(function (event) {
+            .keyup(function(event) {
                 if (event.shiftKey) {
                     drawMode = false;
                 }
@@ -78,7 +86,10 @@ define(function (require, exports, module) {
     }
 
     function drawWire() {
-        displayWire = svg.line(x1, y1, x1, y1)
+
+        currentPath = "";
+
+        displayWire = svg.path(path)
             .attr({
                 stroke: '#000',
                 "stroke-width": 2,
@@ -92,18 +103,14 @@ define(function (require, exports, module) {
         if (drawing) {
 
             // Creates the invisble wire.
-            wire = svg.line(x1, y1, x2, y2)
+            wire = svg.path(path)
                 .attr({
                     "stroke-opacity": 0,
                     "stroke-width": 8,
+                    "fill": "none",
                     tabindex: container.getTabIndex()
                 })
                 .addClass('wire');
-
-            // Create an instance of Wire to save the wire that has been made.
-
-            var w = new Wire($(wire.node), $(displayWire.node));
-
         }
     }
 
@@ -113,12 +120,10 @@ define(function (require, exports, module) {
 
             // Resets coordinates
 
+            path = path + currentPath;
+
             x1 = x2;
             y1 = y2;
-
-            // Draws new wire
-
-            drawWire();
 
             cn.addPoint(x1, y1);
 
@@ -143,7 +148,8 @@ define(function (require, exports, module) {
                 }
             }
 
-            displayWire.plot(x1, y1, x2, y2);
+            currentPath = "M" + x1 + " " + y1 + "L" + x2 + " " + y2;
+            displayWire.plot(path + currentPath);
 
             wireEnd.cx(x2).cy(y2);
         }
@@ -151,6 +157,8 @@ define(function (require, exports, module) {
 
     function startWire(position) {
             $("#content").css('cursor', 'crosshair');
+
+            path = "";
 
             x1 = Math.round(position.x / 8) * 8;
             y1 = Math.round(position.y / 8) * 8;
@@ -161,7 +169,6 @@ define(function (require, exports, module) {
 
             wireEnd = svg.circle(8).cx(x1).cy(y1).addClass('graphics');
 
-
             drawing = true;
             Terminal.snapMode(drawing);
         }
@@ -169,6 +176,8 @@ define(function (require, exports, module) {
 
     function endWire(position, isNode) {
         addWire();
+        // Create an instance of Wire to save the wire that has been made.
+        var w = new Wire(wire, displayWire);
 
         drawing = false;
 
@@ -199,9 +208,11 @@ define(function (require, exports, module) {
     }
 
     function selectedWire(event) {
+        console.log(event);
+
         if (drawing) {
 
-            $(this).blur();
+            $(event.target).blur();
 
             endWire({
                 x: x2,
@@ -213,10 +224,7 @@ define(function (require, exports, module) {
 
 
     function removeWire() {
-
-        // wire.remove();
-        // displayWire.remove();
-
+        wire.remove();
     }
 
     function snapToTerminal(position) {

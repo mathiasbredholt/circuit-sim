@@ -76,4 +76,13 @@
 }, {
     "title": "Add Flip flop",
     "type": "Component"
+}, {
+	"title": "Add Oscilloscope",
+	"cmd": "add_component",
+	"type": "Component",
+	"content": {
+		"name": "Oscilloscope",
+		"img": "oscilloscope.svg",
+		"showParameter": false
+	}
 }]
