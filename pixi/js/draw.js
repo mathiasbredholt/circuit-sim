@@ -23,11 +23,148 @@ renderer.render(container);
 var wire, drawMode = false, diagonal = false;
 var x1, x2, y1, y2;
 
-var wireMode = false, moveMode = false, scaleMode = false, _moveX, _moveY, _scaleX, _scaleY, _parent, _target, _bbox;
+var wireMode = false, 
+	snapMode = false, 
+	moveMode = false,
+	scaleMode = false,
+	_moveX,
+	_moveY,
+	_scaleX,
+	_scaleY,
+	_parent,
+	_target,
+	_bbox;
 var blur = function() {};
 
-x1 = 64; y1 = 64; drawNode(); // For testing
+drawNode(64, 64); // For testing
 
+
+background.mousedown = function(event) {
+	// focus handler
+	blur();
+	blur = function() {};
+
+	if (drawMode) {
+		resetWire();
+		x1 = x2;
+		y1 = y2;
+		beginWire();
+	}
+};
+
+function drawNode(x, y) {
+	var node = new PIXI.Graphics();
+	node.beginFill(0x000000);
+	node.drawCircle(0, 0, 4);
+	node.endFill();
+	node.hitArea = new PIXI.Circle(0, 0, 32);
+	node.position.x = x;
+	node.position.y = y;
+	node.interactive = true;
+
+	var area = new PIXI.Graphics();
+	area.beginFill(0x0000FF, 0.25);
+	area.drawCircle(0, 0, 32);
+	area.endFill();
+	node.addChildAt(area, 0);
+	node.mousedown = function(event) {// begin or end wire drawing
+		// focus handler
+		blur();
+		blur = function() {};
+
+		event.stopPropagation();
+
+		drawMode = !drawMode;
+		
+		if (!drawMode) {
+			x2 = node.position.x;
+			y2 = node.position.y;
+			resetWire();
+		}
+		
+		if (drawMode) {
+			x1 = node.position.x;
+			y1 = node.position.y;
+			beginWire();
+		}
+	};
+	node.mouseover = function() {
+		if (drawMode) {
+			snapMode = true;
+			wireMode = true;
+			x2 = node.position.x;
+			y2 = node.position.y;
+			update();
+		}
+	};
+	node.mouseout = function() {
+		if (drawMode) {
+			snapMode = false;
+			wireMode = true;
+			update();
+		}
+	};
+	container.addChild(node);
+}
+
+function beginWire() {
+	wire = new PIXI.Graphics();
+	container.addChildAt(wire, 0);
+	update();
+	document.onmousemove = function(event) {
+		diagonal = event.altKey;
+		if (wireMode) update();
+		if (drawMode) {
+			wireMode = true;
+			if (!snapMode) {
+				x2 = snap(event.clientX);
+				y2 = snap(event.clientY);
+			}	
+		}	
+	};
+}
+
+function resetWire() {
+	update();
+	var area = new PIXI.Graphics();
+	area.beginFill(0xFF0000, 0.5);
+	area.drawPolygon(calculateBounds());
+	area.endFill();
+	wire.addChildAt(area, 0);
+	wire.hitArea =  new PIXI.Polygon(calculateBounds());
+	wire.interactive = true;
+	// wire.mousedown = function(event) {
+	// 	event.stopPropagation();
+	// 	resetWire();
+	// 	x1 = snap(event.data.global.x);
+	// 	y1 = snap(event.data.global.y);
+	// 	drawMode = !drawMode;
+	// 	drawNode();
+	// };
+}
+
+function calculateBounds() { // calculates bounds for the snap area of the wires
+	var width = 10;
+		var dx = x2 - x1;
+		var dy = y2 - y1;
+		var len = Math.sqrt(dx*dx+dy*dy);
+
+		var vec = [-(width/2)*dy/len,(width/2)*dx/len];
+
+		var p1 = [x1 + vec[0], y1 + vec[1]];
+		var p2 = [x1 - vec[0], y1 - vec[1]];
+		var p3 = [x2 - vec[0], y2 - vec[1]];
+		var p4 = [x2 + vec[0], y2 + vec[1]];
+
+		return [ p1[0], p1[1], p2[0], p2[1], p3[0], p3[1], p4[0], p4[1] ];
+}
+
+function snap(x) {
+	return Math.round((x)/8)*8;
+}
+
+
+// --- COMPONENT DRAWING ---
 var imgSprite;
 
 // draws svg image
@@ -48,110 +185,6 @@ img.onload = function() {
 	container.addChild(component);
 	update();
 };
-
-
-background.mousedown = function(event) {
-	// focus handler
-	blur();
-	blur = function() {};
-
-	if (drawMode) {
-		resetWire();
-		x1 = snap(event.data.global.x);
-		y1 = snap(event.data.global.y);
-		beginWire();
-	}
-};
-
-function drawNode() {
-	var node = new PIXI.Graphics();
-	node.beginFill(0x000000);
-	node.drawCircle(x1, y1, 4);
-	node.endFill();
-	node.hitArea = new PIXI.Circle(x1, y1, 16);
-	node.interactive = true;
-	node.mousedown = function(event) {// begin or end wire drawing
-		// focus handler
-		blur();
-		blur = function() {};
-
-		event.stopPropagation();
-		drawMode = !drawMode;
-		if (!drawMode) {
-			resetWire();
-		}
-		x1 = snap(event.data.global.x);
-		y1 = snap(event.data.global.y);
-		if (drawMode) {
-			beginWire();
-		}
-	};
-	container.addChild(node);
-}
-
-function beginWire() {
-	document.onmousemove = function(event) {
-		diagonal = event.altKey;
-		if (wireMode) update();
-		if (drawMode) {
-			wireMode = true;
-			x2 = snap(event.clientX);
-			y2 = snap(event.clientY);		
-		}	
-	};
-	wire = new PIXI.Graphics();
-	container.addChild(wire);
-	update();
-}
-
-function resetWire() {
-	var poly = new PIXI.Graphics();
-	poly.beginFill(0xFF0000, 0.5);
-	poly.drawPolygon(calculateBounds());
-	// if (!diagonal) {
-	// 	poly.drawRect(x1 - 4, y1 - 4, x2 - x1 + 8, y2 - y1 + 8);
-	// }
-	// else {
-	// 	poly.rotation = Math.atan((y2 - y1)/(x2 - x1));
-	// 	poly.drawRect( -4, -4, x2 - x1 + 8, 8);
-	// 	poly.position = { x: x1, y: y1 };
-	// }
-	poly.endFill();
-	wire.addChildAt(poly, 0);
-
-	// calculate the snap area
-	//wire.hitArea =  new PIXI.Polygon(calculateBounds());
-	wire.interactive = true;
-	wire.mousedown = function(event) {
-		event.stopPropagation();
-		resetWire();
-		x1 = snap(event.data.global.x);
-		y1 = snap(event.data.global.y);
-		drawMode = !drawMode;
-		drawNode();
-	};
-}
-
-function drawTransformationBox(target, parent) {
-	var width = target.width, height = target.height;
-	bbox = new PIXI.Graphics();
-	bbox.lineStyle(0.5, 0x000000);
-	bbox.drawRect(0, 0, width, height);
-	parent.addChildAt(bbox, 0);
-	update();
-	
-	// for (var i = 0; i < 4; i++) {
-	// 	anchor = new PIXI.Graphics();
-	// 	anchor.lineStyle(2, 0x000000);
-	// 	anchor.beginFill(0xFFFFFF);
-	// 	anchor.drawCircle(i * (target.width),i * (target.height), 4);
-	// 	anchor.endFill();
-	// 	anchor.hitArea = new PIXI.Circle(0, 0, 16);
-	// 	anchor.interactive = true;
-	// 	scaleEnable(anchor, bbox, target, parent);
-	// 	parent.addChild(anchor);
-	// }
-}
 
 function selectEnable(target, parent, draggable) {
 	target.mousedown = function(event) {
@@ -198,6 +231,27 @@ function selectEnable(target, parent, draggable) {
 
 }
 
+function drawTransformationBox(target, parent) {
+	var width = target.width, height = target.height;
+	bbox = new PIXI.Graphics();
+	bbox.lineStyle(0.5, 0x000000);
+	bbox.drawRect(0, 0, width, height);
+	parent.addChildAt(bbox, 0);
+	update();
+	
+	// for (var i = 0; i < 4; i++) {
+	// 	anchor = new PIXI.Graphics();
+	// 	anchor.lineStyle(2, 0x000000);
+	// 	anchor.beginFill(0xFFFFFF);
+	// 	anchor.drawCircle(i * (target.width),i * (target.height), 4);
+	// 	anchor.endFill();
+	// 	anchor.hitArea = new PIXI.Circle(0, 0, 16);
+	// 	anchor.interactive = true;
+	// 	scaleEnable(anchor, bbox, target, parent);
+	// 	parent.addChild(anchor);
+	// }
+}
+
 function scaleEnable(anchor, bbox, target, parent) {
 	anchor.mousedown = function(event) {
 		var width = target.width,
@@ -225,12 +279,8 @@ function scaleEnable(anchor, bbox, target, parent) {
 
 function update() {  // drawing loop
 	if (wireMode) {
-		var dx, dy;
-		dx = x1 - x2;
-	    dy = y1 - y2;
-
-		if (!diagonal) {
-			if (Math.abs(dx) > Math.abs(dy)) {
+		if (!diagonal && !snapMode) {
+			if (Math.abs(x1 - x2) > Math.abs(y1 - y2)) {
 			    y2 = y1;
 			} else {
 			    x2 = x1;
@@ -263,24 +313,4 @@ function update() {  // drawing loop
 	}
 
 	renderer.render(container);
-}
-
-function calculateBounds() { // calculates bounds for the snap area of the wires
-	var width = 10;
-		var dx = x2 - x1;
-		var dy = y2 - y1;
-		var len = Math.sqrt(dx*dx+dy*dy);
-
-		var vec = [-(width/2)*dy/len,(width/2)*dx/len];
-
-		var p1 = [x1 + vec[0], y1 + vec[1]];
-		var p2 = [x1 - vec[0], y1 - vec[1]];
-		var p3 = [x2 - vec[0], y2 - vec[1]];
-		var p4 = [x2 + vec[0], y2 + vec[1]];
-
-		return [ p1[0], p1[1], p2[0], p2[1], p3[0], p3[1], p4[0], p4[1] ];
-}
-
-function snap(x) {
-	return Math.round((x)/8)*8;
 }
