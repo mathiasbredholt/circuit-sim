@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="128" height="128">
+    <path d="M32 64 L40 64 L44 56 L52 72 L60 56 L68 72 L76 56 L84 72 L88 64 L96 64" stroke="#000" stroke-width="2" fill="none" />
+    <circle class="ref" r="0" cx="32" cy="64" />
+    <circle class="ref" r="0" cx="96" cy="64" />
+</svg>

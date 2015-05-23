@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>CircuitSim</title>
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+<body>
+<script src="js/numeric.js"></script>
+<script src="js/pixi.js"></script>
+<svg id="grid" width="800" height="600" xmlns="http://www.w3.org/2000/svg" version="1.2" baseProfile="tiny">
+    <defs>
+        <pattern id="smallGrid" width="8" height="8" patternUnits="userSpaceOnUse">
+            <path d="M 8 0 L 0 0 0 8" fill="none" stroke="#888" stroke-width="0.5" />
+        </pattern>
+    </defs>
+    <rect width="100%" height="100%" fill="url(#smallGrid)" />
+</svg>
+<canvas id="content"></canvas>
+<script src="js/draw.js"></script>
+</body>
+</html>

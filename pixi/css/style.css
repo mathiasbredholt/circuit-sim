@@ -1,0 +1,9 @@
+body {
+	margin: 0px;
+}
+
+#content {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+}
