@@ -142,18 +142,31 @@ function resetWire() {
 	wire.interactive = true;
 	wire.mousedown = function(event) {
 		event.stopPropagation();
-		x2 = event.target.position.x;
-		y2 = event.target.position.y;
 		resetWire();
-		x1 = event.target.position.x;
-		y1 = event.target.position.y;
 		drawMode = !drawMode;
-		drawNode(x1, y1);
+		drawNode(x2, y2);
+	};
+	wire.mouseover = function(event) {
+		// !!! CHANGE !!! need to snap to intersection instead of start position
+		if (drawMode) {
+			snapMode = true;
+			wireMode = true;
+			x2 = event.target.position.x;
+			y2 = event.target.position.y;
+			update();
+		}
+	};
+	wire.mouseout = function() {
+		if (drawMode) {
+			snapMode = false;
+			wireMode = true;
+			update();
+		}
 	};
 }
 
 function calculateBounds() { // calculates bounds for the snap area of the wires
-	var width = 10;
+	var width = 16;
 		var dx = x2 - x1;
 		var dy = y2 - y1;
 		var len = Math.sqrt(dx*dx+dy*dy);
@@ -177,23 +190,23 @@ function snap(x) {
 var imgSprite;
 
 // draws svg image
-var img = new Image();
-img.src = 'img/resistor.svg';
-img.onload = function() {
-	var canvas = document.createElement('canvas');
-	canvas.width = img.width;
-	canvas.height = img.height;
-	canvas.getContext('2d').drawImage(img, 0, 0);
-	var imgTex = new PIXI.Texture.fromCanvas(canvas);
-	imgSprite = new PIXI.Sprite(imgTex);
-	imgSprite.interactive = true;
-	var component = new PIXI.Container();
-	component.addChildAt(imgSprite, 0);
-	component.position = { x: 128, y: 128 };
-	selectEnable(imgSprite, component, true);
-	container.addChild(component);
-	update();
-};
+// var img = new Image();
+// img.src = 'img/resistor.svg';
+// img.onload = function() {
+// 	var canvas = document.createElement('canvas');
+// 	canvas.width = img.width;
+// 	canvas.height = img.height;
+// 	canvas.getContext('2d').drawImage(img, 0, 0);
+// 	var imgTex = new PIXI.Texture.fromCanvas(canvas);
+// 	imgSprite = new PIXI.Sprite(imgTex);
+// 	imgSprite.interactive = true;
+// 	var component = new PIXI.Container();
+// 	component.addChildAt(imgSprite, 0);
+// 	component.position = { x: 128, y: 128 };
+// 	selectEnable(imgSprite, component, true);
+// 	container.addChild(component);
+// 	update();
+// };
 
 function selectEnable(target, parent, draggable) {
 	target.mousedown = function(event) {
