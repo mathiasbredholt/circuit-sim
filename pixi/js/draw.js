@@ -1,3 +1,7 @@
+console.log(Util);
+
+var GRID_SIZE = 8;
+
 var renderer = new PIXI.CanvasRenderer(
     800,
     600,
@@ -81,7 +85,6 @@ function drawNode(x, y, rad, parent) {
 		}
 		
 		if (drawMode) {
-			console.log(node);
 			x1 = parent.position.x + node.position.x;
 			y1 = parent.position.y + node.position.y;
 			beginWire();
@@ -120,8 +123,8 @@ function beginWire() {
 		if (drawMode) {
 			wireMode = true;
 			if (!snapMode) {
-				x2 = snap(event.clientX);
-				y2 = snap(event.clientY);
+				x2 = Util.snap(event.clientX, GRID_SIZE);
+				y2 = Util.snap(event.clientY, GRID_SIZE);
 			}	
 		}	
 	};
@@ -129,13 +132,14 @@ function beginWire() {
 
 function resetWire() {
 	update();
-	
+
 	// debug area
 	var area = new PIXI.Graphics();
 	area.beginFill(0xFF0000, 0.5);
 	area.drawPolygon(calculateBounds());
 	area.endFill();
 	wire.addChildAt(area, 0);
+	update();
 
 	wire.hitArea =  new PIXI.Polygon(calculateBounds());
 	wire.interactive = true;
@@ -162,6 +166,8 @@ function resetWire() {
 			update();
 		}
 	};
+
+	document.getElementById('wires').innerHTML += Util.formatStr('<p>({0}, {1}) -> ({2},{3})</p>', x1 / GRID_SIZE, y1 / GRID_SIZE, x2 / GRID_SIZE, y2 / GRID_SIZE);
 }
 
 function calculateBounds() { // calculates bounds for the snap area of the wires
@@ -179,11 +185,6 @@ function calculateBounds() { // calculates bounds for the snap area of the wires
 
 		return [ p1[0], p1[1], p2[0], p2[1], p3[0], p3[1], p4[0], p4[1] ];
 }
-
-function snap(x) {
-	return Math.round((x)/8)*8;
-}
-
 
 // !!! CHANGE !!! gets the terminal object from server
 termResistor = [ [ 32, 64, 32 ], [ 96, 64, 32 ] ];
@@ -252,8 +253,8 @@ function selectEnable(target, parent, draggable) {
 
 				background.mousemove = function(event) {
 					moveMode = true;
-					_moveX = snap(event.data.global.x - px);
-					_moveY = snap(event.data.global.y - py);
+					_moveX = Util.snap(event.data.global.x - px, GRID_SIZE);
+					_moveY = Util.snap(event.data.global.y - py, GRID_SIZE);
 					update();
 				};
 
@@ -302,10 +303,10 @@ function scaleEnable(anchor, bbox, target, parent) {
 
 		background.mousemove = function(event) {
 			scaleMode = true;
-			_moveX = snap(event.data.global.x);
-			_moveY = snap(event.data.global.y);
-			_scaleX = 1 - snap(event.data.global.x - px) / width;
-			_scaleY = 1 - snap(event.data.global.y - py) / height;
+			_moveX = Util.snap(event.data.global.x, GRID_SIZE);
+			_moveY = Util.snap(event.data.global.y, GRID_SIZE);
+			_scaleX = 1 - Util.snap(event.data.global.x - px, GRID_SIZE) / width;
+			_scaleY = 1 - Util.snap(event.data.global.y - py, GRID_SIZE) / height;
 		};
 
 		container.mouseup = function() {
