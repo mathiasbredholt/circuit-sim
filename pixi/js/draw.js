@@ -36,8 +36,6 @@ var wireMode = false,
 	_bbox;
 var blur = function() {};
 
-drawNode(64, 64); // For testing
-
 
 background.mousedown = function(event) {
 	// focus handler
@@ -52,12 +50,12 @@ background.mousedown = function(event) {
 	}
 };
 
-function drawNode(x, y) {
+function drawNode(x, y, rad, parent) {
 	var node = new PIXI.Graphics();
 	node.beginFill(0x000000);
 	node.drawCircle(0, 0, 4);
 	node.endFill();
-	node.hitArea = new PIXI.Circle(0, 0, 32);
+	node.hitArea = new PIXI.Circle(0, 0, rad);
 	node.position.x = x;
 	node.position.y = y;
 	node.interactive = true;
@@ -77,14 +75,15 @@ function drawNode(x, y) {
 		drawMode = !drawMode;
 		
 		if (!drawMode) {
-			x2 = node.position.x;
-			y2 = node.position.y;
+			x2 = parent.position.x + node.position.x;
+			y2 = parent.position.y + node.position.y;
 			resetWire();
 		}
 		
 		if (drawMode) {
-			x1 = node.position.x;
-			y1 = node.position.y;
+			console.log(node);
+			x1 = parent.position.x + node.position.x;
+			y1 = parent.position.y + node.position.y;
 			beginWire();
 		}
 	};
@@ -92,8 +91,8 @@ function drawNode(x, y) {
 		if (drawMode) {
 			snapMode = true;
 			wireMode = true;
-			x2 = node.position.x;
-			y2 = node.position.y;
+			x2 = parent.position.x + node.position.x;
+			y2 = parent.position.y + node.position.y;
 			update();
 		}
 	};
@@ -104,7 +103,7 @@ function drawNode(x, y) {
 			update();
 		}
 	};
-	container.addChild(node);
+	parent.addChild(node);
 	update();
 }
 
@@ -144,7 +143,7 @@ function resetWire() {
 		event.stopPropagation();
 		resetWire();
 		drawMode = !drawMode;
-		drawNode(x2, y2);
+		drawNode(x2, y2, 32, event.target);
 	};
 	wire.mouseover = function(event) {
 		// !!! CHANGE !!! need to snap to intersection instead of start position
@@ -186,27 +185,42 @@ function snap(x) {
 }
 
 
+// !!! CHANGE !!! gets the terminal object from server
+termResistor = [ [ 32, 64, 32 ], [ 96, 64, 32 ] ];
+termCapacitor = [ [ 0, 32, 32 ], [ 64, 32, 32 ] ];
+
 // --- COMPONENT DRAWING ---
-var imgSprite;
+drawComponent(128, 128, 'img/resistor.svg', termResistor);
+drawComponent(320, 128, 'img/capacitor.svg', termCapacitor);
+drawComponent(320, 256, 'img/voltage.svg', termCapacitor);
+
 
 // draws svg image
-// var img = new Image();
-// img.src = 'img/resistor.svg';
-// img.onload = function() {
-// 	var canvas = document.createElement('canvas');
-// 	canvas.width = img.width;
-// 	canvas.height = img.height;
-// 	canvas.getContext('2d').drawImage(img, 0, 0);
-// 	var imgTex = new PIXI.Texture.fromCanvas(canvas);
-// 	imgSprite = new PIXI.Sprite(imgTex);
-// 	imgSprite.interactive = true;
-// 	var component = new PIXI.Container();
-// 	component.addChildAt(imgSprite, 0);
-// 	component.position = { x: 128, y: 128 };
-// 	selectEnable(imgSprite, component, true);
-// 	container.addChild(component);
-// 	update();
-// };
+function drawComponent(x, y, path, terminals) {
+	var imgSprite;
+	var img = new Image();
+	img.src = path;
+	img.onload = function() {
+		var canvas = document.createElement('canvas');
+		canvas.width = img.width;
+		canvas.height = img.height;
+		canvas.getContext('2d').drawImage(img, 0, 0);
+		var imgTex = new PIXI.Texture.fromCanvas(canvas);
+		imgSprite = new PIXI.Sprite(imgTex);
+		imgSprite.interactive = true;
+		var component = new PIXI.Container();
+		component.addChildAt(imgSprite, 0);
+		component.position = { x: x, y: y };
+		selectEnable(imgSprite, component, true);
+		container.addChild(component);
+		
+		// draw nodes
+		for (var i = 0; i < terminals.length; i++) {
+			drawNode(terminals[i][0], terminals[i][1], terminals[i][2], component);
+		}
+		update();
+	};
+}
 
 function selectEnable(target, parent, draggable) {
 	target.mousedown = function(event) {
@@ -240,6 +254,7 @@ function selectEnable(target, parent, draggable) {
 					moveMode = true;
 					_moveX = snap(event.data.global.x - px);
 					_moveY = snap(event.data.global.y - py);
+					update();
 				};
 
 				container.mouseup = function(event) {
@@ -259,7 +274,6 @@ function drawTransformationBox(target, parent) {
 	bbox.lineStyle(0.5, 0x000000);
 	bbox.drawRect(0, 0, width, height);
 	parent.addChildAt(bbox, 0);
-	update();
 	
 	// for (var i = 0; i < 4; i++) {
 	// 	anchor = new PIXI.Graphics();
@@ -272,6 +286,7 @@ function drawTransformationBox(target, parent) {
 	// 	scaleEnable(anchor, bbox, target, parent);
 	// 	parent.addChild(anchor);
 	// }
+	update();
 }
 
 function scaleEnable(anchor, bbox, target, parent) {
