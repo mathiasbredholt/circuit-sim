@@ -105,11 +105,15 @@ function drawNode(x, y) {
 		}
 	};
 	container.addChild(node);
+	update();
 }
 
 function beginWire() {
 	wire = new PIXI.Graphics();
-	container.addChildAt(wire, 0);
+	wire.position.x = x1;
+	wire.position.y = y1;
+	container.addChildAt(wire, 1);
+	console.log(wire);
 	update();
 	document.onmousemove = function(event) {
 		diagonal = event.altKey;
@@ -126,21 +130,26 @@ function beginWire() {
 
 function resetWire() {
 	update();
+	
+	// debug area
 	var area = new PIXI.Graphics();
 	area.beginFill(0xFF0000, 0.5);
 	area.drawPolygon(calculateBounds());
 	area.endFill();
 	wire.addChildAt(area, 0);
+
 	wire.hitArea =  new PIXI.Polygon(calculateBounds());
 	wire.interactive = true;
-	// wire.mousedown = function(event) {
-	// 	event.stopPropagation();
-	// 	resetWire();
-	// 	x1 = snap(event.data.global.x);
-	// 	y1 = snap(event.data.global.y);
-	// 	drawMode = !drawMode;
-	// 	drawNode();
-	// };
+	wire.mousedown = function(event) {
+		event.stopPropagation();
+		x2 = event.target.position.x;
+		y2 = event.target.position.y;
+		resetWire();
+		x1 = event.target.position.x;
+		y1 = event.target.position.y;
+		drawMode = !drawMode;
+		drawNode(x1, y1);
+	};
 }
 
 function calculateBounds() { // calculates bounds for the snap area of the wires
@@ -151,10 +160,10 @@ function calculateBounds() { // calculates bounds for the snap area of the wires
 
 		var vec = [-(width/2)*dy/len,(width/2)*dx/len];
 
-		var p1 = [x1 + vec[0], y1 + vec[1]];
-		var p2 = [x1 - vec[0], y1 - vec[1]];
-		var p3 = [x2 - vec[0], y2 - vec[1]];
-		var p4 = [x2 + vec[0], y2 + vec[1]];
+		var p1 = [vec[0], vec[1]];
+		var p2 = [-vec[0], -vec[1]];
+		var p3 = [(x2 - x1) - vec[0], (y2 - y1) - vec[1]];
+		var p4 = [(x2 - x1) + vec[0], (y2 - y1) + vec[1]];
 
 		return [ p1[0], p1[1], p2[0], p2[1], p3[0], p3[1], p4[0], p4[1] ];
 }
@@ -288,8 +297,8 @@ function update() {  // drawing loop
 		}
 		wire.clear();
 		wire.lineStyle(2, 0x000000);
-		wire.moveTo(x1, y1);
-		wire.lineTo(x2, y2);
+		wire.moveTo(0, 0);
+		wire.lineTo(x2 - x1, y2 - y1);
 		wireMode = false;
 		requestAnimationFrame(update);
 	}
