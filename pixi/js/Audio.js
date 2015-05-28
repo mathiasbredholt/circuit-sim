@@ -2,11 +2,13 @@ var Audio = (function() {
 	var AudioContext = window.AudioContext || window.webkitAudioContext;
 	var audioCtx = new AudioContext();
 
-	var frameCount = audioCtx.sampleRate * 0.5;
+	var frameCount = audioCtx.sampleRate * 0.5; // delay
 	var buffer = audioCtx.createBuffer(1, frameCount, audioCtx.sampleRate);
 	var bufferData = buffer.getChannelData(0);
 
 	for (var i = 0; i < frameCount; i++) {
+		// insert data here
+		// creates to sine waves just for fun
 		bufferData[i] = (Math.sin(i/frameCount * 1500) + Math.sin(i/frameCount * 2000)) * 0.05;
 	}
 
