@@ -1,3 +1,5 @@
+// UTILITIES MODULE
+
 var Util = (function() {
 	
 	var formatStr = function() {

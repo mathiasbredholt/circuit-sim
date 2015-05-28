@@ -1,5 +1,3 @@
-console.log(Util);
-
 var GRID_SIZE = 8;
 
 var renderer = new PIXI.CanvasRenderer(
@@ -25,7 +23,7 @@ container.interactive = true;
 renderer.render(container);
 
 var wire, drawMode = false, diagonal = false;
-var x1, x2, y1, y2;
+var x1, x2, y1, y2, fromX, fromY;
 
 var wireMode = false, 
 	snapMode = false, 
@@ -45,6 +43,7 @@ background.mousedown = function(event) {
 	// focus handler
 	blur();
 	blur = function() {};
+	update();
 
 	if (drawMode) {
 		resetWire();
@@ -54,59 +53,63 @@ background.mousedown = function(event) {
 	}
 };
 
-function drawNode(x, y, rad, parent) {
-	var node = new PIXI.Graphics();
-	node.beginFill(0x000000);
-	node.drawCircle(0, 0, 4);
-	node.endFill();
-	node.hitArea = new PIXI.Circle(0, 0, rad);
-	node.position.x = x;
-	node.position.y = y;
-	node.interactive = true;
+function drawJunction(x, y, rad, parent) {
+	var junction = new PIXI.Graphics();
+	junction.beginFill(0x000000);
+	junction.drawCircle(0, 0, 4);
+	junction.endFill();
+	junction.hitArea = new PIXI.Circle(0, 0, rad);
+	junction.position.x = x;
+	junction.position.y = y;
+	junction.interactive = true;
 
 	var area = new PIXI.Graphics();
 	area.beginFill(0x0000FF, 0.25);
 	area.drawCircle(0, 0, 32);
 	area.endFill();
-	node.addChildAt(area, 0);
-	node.mousedown = function(event) {// begin or end wire drawing
+	junction.addChildAt(area, 0);
+	junction.mousedown = function(event) {// begin or end wire drawing
 		// focus handler
 		blur();
 		blur = function() {};
+		update();
 
 		event.stopPropagation();
 
 		drawMode = !drawMode;
 		
 		if (!drawMode) {
-			x2 = parent.position.x + node.position.x;
-			y2 = parent.position.y + node.position.y;
+			x2 = parent.position.x + junction.position.x;
+			y2 = parent.position.y + junction.position.y;
 			resetWire();
+			Circuit.addConnection([startX, startY], [x2 / GRID_SIZE, y2 / GRID_SIZE]);
 		}
 		
 		if (drawMode) {
-			x1 = parent.position.x + node.position.x;
-			y1 = parent.position.y + node.position.y;
+			x1 = parent.position.x + junction.position.x;
+			y1 = parent.position.y + junction.position.y;
+			startX = x1 / GRID_SIZE;
+			startY = y1 / GRID_SIZE;
 			beginWire();
 		}
 	};
-	node.mouseover = function() {
+	junction.mouseover = function() {
 		if (drawMode) {
 			snapMode = true;
 			wireMode = true;
-			x2 = parent.position.x + node.position.x;
-			y2 = parent.position.y + node.position.y;
+			x2 = parent.position.x + junction.position.x;
+			y2 = parent.position.y + junction.position.y;
 			update();
 		}
 	};
-	node.mouseout = function() {
+	junction.mouseout = function() {
 		if (drawMode) {
 			snapMode = false;
 			wireMode = true;
 			update();
 		}
 	};
-	parent.addChild(node);
+	parent.addChild(junction);
 	update();
 }
 
@@ -115,7 +118,6 @@ function beginWire() {
 	wire.position.x = x1;
 	wire.position.y = y1;
 	container.addChildAt(wire, 1);
-	console.log(wire);
 	update();
 	document.onmousemove = function(event) {
 		diagonal = event.altKey;
@@ -141,33 +143,36 @@ function resetWire() {
 	wire.addChildAt(area, 0);
 	update();
 
-	wire.hitArea =  new PIXI.Polygon(calculateBounds());
-	wire.interactive = true;
-	wire.mousedown = function(event) {
-		event.stopPropagation();
-		resetWire();
-		drawMode = !drawMode;
-		drawNode(x2, y2, 32, event.target);
-	};
-	wire.mouseover = function(event) {
-		// !!! CHANGE !!! need to snap to intersection instead of start position
-		if (drawMode) {
-			snapMode = true;
-			wireMode = true;
-			x2 = event.target.position.x;
-			y2 = event.target.position.y;
-			update();
-		}
-	};
-	wire.mouseout = function() {
-		if (drawMode) {
-			snapMode = false;
-			wireMode = true;
-			update();
-		}
-	};
 
-	document.getElementById('wires').innerHTML += Util.formatStr('<p>({0}, {1}) -> ({2},{3})</p>', x1 / GRID_SIZE, y1 / GRID_SIZE, x2 / GRID_SIZE, y2 / GRID_SIZE);
+	// junctions on wires
+
+	// wire.hitArea =  new PIXI.Polygon(calculateBounds());
+	// wire.interactive = true;
+	// wire.mousedown = function(event) {
+	// 	event.stopPropagation();
+	// 	resetWire();
+	// 	drawMode = !drawMode;
+	// 	drawJunction(x2, y2, 32, event.target);
+	// };
+	// wire.mouseover = function(event) {
+	// 	// !!! CHANGE !!! need to snap to intersection instead of start position
+	// 	if (drawMode) {
+	// 		snapMode = true;
+	// 		wireMode = true;
+	// 		x2 = event.target.position.x;
+	// 		y2 = event.target.position.y;
+	// 		update();
+	// 	}
+	// };
+	// wire.mouseout = function() {
+	// 	if (drawMode) {
+	// 		snapMode = false;
+	// 		wireMode = true;
+	// 		update();
+	// 	}
+	// };
+
+	Circuit.addWire([x1 / GRID_SIZE, y1 / GRID_SIZE ],  [x2 / GRID_SIZE, y2 / GRID_SIZE ]);
 }
 
 function calculateBounds() { // calculates bounds for the snap area of the wires
@@ -187,13 +192,63 @@ function calculateBounds() { // calculates bounds for the snap area of the wires
 }
 
 // !!! CHANGE !!! gets the terminal object from server
-termResistor = [ [ 32, 64, 32 ], [ 96, 64, 32 ] ];
-termCapacitor = [ [ 0, 32, 32 ], [ 64, 32, 32 ] ];
 
 // --- COMPONENT DRAWING ---
-drawComponent(128, 128, 'img/resistor.svg', termResistor);
-drawComponent(320, 128, 'img/capacitor.svg', termCapacitor);
-drawComponent(320, 256, 'img/voltage.svg', termCapacitor);
+var posX = 16, posY = 16;
+term = [ { x: 32, y: 64, r: 32 }, { x: 96, y: 64, r: 32 } ];
+
+drawComponent(posX, posY, 'img/resistor.svg', term);
+
+Circuit.addComponent({
+	type: 'resistor',
+	position: { x: posX, y: posY },
+	terminals: _.map(term, function(obj) { 
+		return [ obj.x / GRID_SIZE + posX, obj.y / GRID_SIZE + posY ];
+	})
+});
+
+// posX = 32;
+// posY = 32;
+// term = [ { x: 0, y: 32, r : 32 }, { x: 64, y: 32, r: 32 } ];
+
+// drawComponent(posX, posY, 'img/capacitor.svg', term);
+
+// Circuit.addComponent({
+// 	type: 'capacitor',
+// 	position: { x: posX, y: posY },
+// 	terminals: _.map(term, function(obj) { 
+// 		return [ obj.x / GRID_SIZE + posX, obj.y / GRID_SIZE + posY ]; 
+// 	})
+// });
+
+posX = 48;
+posY = 48;
+term = [ { x: 0, y: 32, r : 32 }, { x: 64, y: 32, r: 32 } ];
+
+drawComponent(posX, posY, 'img/voltage.svg', term);
+
+Circuit.addComponent({
+	type: 'voltage',
+	position: { x: posX, y: posY },
+	terminals: _.map(term, function(obj) { 
+		return [ obj.x / GRID_SIZE + posX, obj.y / GRID_SIZE + posY ]; 
+	})
+});
+
+posX = 16;
+posY = 48;
+term = [ { x: 32, y: 0, r: 32 } ];
+
+drawComponent(posX, posY, 'img/gnd.svg', term);
+
+Circuit.addComponent({
+	type: 'gnd',
+	position: { x: posX, y: posY },
+	terminals: _.map(term, function(obj) { 
+		return [ obj.x / GRID_SIZE + posX, obj.y / GRID_SIZE + posY ];
+	})
+});
+// ABOVE IS FOR TESTING ONLY
 
 
 // draws svg image
@@ -211,14 +266,20 @@ function drawComponent(x, y, path, terminals) {
 		imgSprite.interactive = true;
 		var component = new PIXI.Container();
 		component.addChildAt(imgSprite, 0);
-		component.position = { x: x, y: y };
+		component.position = { x: x * GRID_SIZE, y: y * GRID_SIZE };
 		selectEnable(imgSprite, component, true);
 		container.addChild(component);
-		
-		// draw nodes
-		for (var i = 0; i < terminals.length; i++) {
-			drawNode(terminals[i][0], terminals[i][1], terminals[i][2], component);
+
+		function printArguments() {
+			console.log(arguments);
 		}
+
+		// draw junctions
+		_.each(terminals, function(obj) { drawJunction(obj.x, obj.y, obj.r, component); });
+
+			// for (var i = 0; i < terminals.length; i++) {
+			// 	drawJunction(terminals[i].x, terminals[i].y, terminals[i].r, component);
+			// }
 		update();
 	};
 }
@@ -236,6 +297,7 @@ function selectEnable(target, parent, draggable) {
 				parent.removeChildAt(0);
 				target.mousedown = function() { select(); };
 			};
+			update();
 
 			drawTransformationBox(target, parent);
 
@@ -275,7 +337,9 @@ function drawTransformationBox(target, parent) {
 	bbox.lineStyle(0.5, 0x000000);
 	bbox.drawRect(0, 0, width, height);
 	parent.addChildAt(bbox, 0);
-	
+
+	// scaling
+
 	// for (var i = 0; i < 4; i++) {
 	// 	anchor = new PIXI.Graphics();
 	// 	anchor.lineStyle(2, 0x000000);
